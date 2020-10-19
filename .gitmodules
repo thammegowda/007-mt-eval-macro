@@ -1,3 +1,6 @@
 [submodule "tangled"]
 	path = tangled
 	url = git@github.com:nitikam/tangled.git
+[submodule "justifs/bleurt"]
+	path = justifs/bleurt
+	url = git@github.com:thammegowda/bleurt.git

@@ -1,0 +1,6 @@
+# sort data
+< mt-scores-tg.tsv  | sed 's/nc.en-\([^\.]*\)./\1 /; s/System/Lang Size BPE/; s/.fconv//; s/.bpe/ /;' | awk '{x=$2; $2=$3; $3=x; print}'  | sed 's/K \([0-9][0-9]K\)/K 0\1/' | sort -n  > mt-scores-tg.sorted.tsv
+
+# run these inside mt_test_output_dir
+metrics="bleu chrf macrof microf macrobleu microbleu"; (echo "System $metrics" ; for sys in */sys.detok.txt; do ref=${sys/sys/ref}; echo " (echo $(dirname $sys) && $rebleu $ref -m $metrics  < $sys ) | tr '\n' ' ' && echo ''"; done   | parallel -j 10 ) > ../tg-scores.tsv
+(echo "System chrf1 chrf3" ; for sys in */sys.detok.txt; do ref=${sys/sys/ref}; echo " (echo $(dirname $sys) && $rebleu $ref -m chrf --chrf-beta=1 --width=2  < $sys && $rebleu $ref -m chrf --chrf-beta=3 --width=2  < $sys) | tr '\n' ' ' && echo '' "; done | parallel -j 10 ) > ../tg-scores-chrf1.tsv
