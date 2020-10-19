@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# this is chrf which works on non tokenized data
 # requirements
 # pip install sacrebleu sacremoses awkg
 
@@ -13,37 +14,43 @@ export N_CPUS=20
 FILE=newstest19-deen.en
 # download
 [[ -f $FILE ]] || sacrebleu -t wmt19 -l de-en --echo ref > $FILE
+[[ -f $FILE.lc ]] || tr '[:upper:]' '[:lower:]' < $FILE > $FILE.lc
+
 # tokenize
 [[ -f $FILE.tok ]] || sacremoses tokenize -xa < $FILE > $FILE.tok
 # lc
 [[ -f $FILE.tok.lc ]] || tr '[:upper:]' '[:lower:]' < $FILE.tok > $FILE.tok.lc
 
 # types and frequencies
-export FILE=$FILE.tok.lc
-export VOCAB=$FILE.vocab
+export FILE=$FILE
+export VOCAB=$FILE.tok.lc.vocab
 [[ -f $VOCAB ]] || tr ' ' '\n' < $FILE | sort | uniq -c | sort -nr | awk '{print $2,$1}' > $VOCAB
 
 export PYTHONIOENCODING="UTF-8"
-export metrics="bleu chrf macrof microf macrobleu microbleu"
 
-echo "Type Frequency $metrics" | tr ' ' '\t'
+echo "Type Frequency CHRF1 CHRF3" | tr ' ' '\t'
 
 function damage {
-    type="$1"
+    type="${1}"
     freq="$2"
-    (
-        echo $type
-        echo $freq
         # remove word, for poor recall
-        # gsed "s/\b$type\b//"  # I tried to use sed but i need word boundaries (\b) but literal match on chars like . and ? -- those contradict each other
-        cat $FILE | python -c "
-typ = '$type'
+        # tokenize -> damage detokenize
+	# evaluate against untokenized refs
+	
+    sys_out=$(cat $FILE.tok.lc | python -c "
+typ = '${type}'
 import sys
 for line in sys.stdin:
     toks = line.split()
     toks = [tok for tok in toks if tok != typ]
     print(' '.join(toks))
-" | sacrebleu $FILE -m $metrics --chrf-beta=1 -lc -tok none -w 5 -b
+" | sacremoses detokenize )	
+
+    (
+	echo "${type}"
+	echo "${freq}"
+	echo "${sys_out}" | sacrebleu $FILE.lc -m chrf --chrf-beta=1 -lc -w 5 -b
+	echo "${sys_out}" | sacrebleu $FILE.lc -m chrf --chrf-beta=3 -lc -w 5 -b
     ) | tr '\n' '\t'
     echo ""
 }
@@ -54,5 +61,5 @@ export SHELL=$(type -p bash)
 export -f damage
 
 cat $VOCAB |  while read type freq; do
-    echo "damage '$type' $freq"
+    echo "damage '${type}' ${freq}"
 done | parallel -J $N_CPUS 
