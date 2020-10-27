@@ -35,6 +35,43 @@ wget http://data.statmt.org/wmt17/translation-task/wmt17-submitted-data-v1.0.tgz
 # Extract
 for i in *.tgz; do tar xf $i ; done
 
+
+
+# Step 3: Prepare WMT sys scores
+cd $metrics
+for f in $PWD/wmt*-metrics-task-package/results/combine-scores-sys-DA.py; do
+ cd $(dirname $f) && pwd && python2 combine-scores-sys-DA.py
+done
+
+
+
+
+# Step 4: Collect all sys level scores to one dir
+
+cd $root
+mkdir wmt-sys-scores
+cp $metrics/wmt*-metrics-task-package/results/out/DA-*-sys-nohy-scores.csv wmt-sys-scores 
+
+
+
+# Step 5: Collect all submissions
+
+cd $root
+mkdir wmt-submissions/{references,sources,system-outputs}
+for i in references sources system-outputs; do
+  for j in submissions/wmt*-submitted-data/txt/$i; do
+     cp -r $j/* wmt-submissions/$i;
+  done
+done
+du -sh wmt-submissions 
+
+
+# Step 6:: 2019 ENZH references are bad; fix them 
+
+
+cat wmt-submissions/references/newstest2019-enzh-ref.zh | sed 's/([a-zA-Z\., ]*)//g; s/ [ ]*//g' > wmt-submissions/references/newstest2019-enzh-ref.zh.cln
+
 ```
+------
 
 
