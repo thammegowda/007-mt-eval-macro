@@ -69,8 +69,9 @@ du -sh wmt-submissions
 # Step 6:: 2019 ENZH references are bad; fix them 
 
 for ref in wmt-submissions/references/newstest*-enzh-ref.zh; do
-    cat $ref | sed "s/([a-zA-Z0-9\.,'’:/\/\"? -]*)//g; s/ [ ]*//g" > $ref.cln
+    cat $ref | sed "s/([a-zA-Z0-9\.,'’:/\/\"? -]*)//g" > $ref.cln
 done
+
 
 ```
 ------
