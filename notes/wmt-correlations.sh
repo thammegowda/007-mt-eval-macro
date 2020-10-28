@@ -61,12 +61,20 @@ function compute_scores {
     
     #alias sacrebleu="PYTHONPATH=$SACREBLEU python -m sacrebleu"
     export PYTHONPATH=$SACREBLEU
+
+    tokr='intl'
+    if [[ $lang_pair =~ .*-zh ]]; then
+	tokr='zh'
+    elif [[ $lang_pair =~ .*-zh ]]; then
+	tokr='ja-mecab'
+    fi
+	
     # BLEU
     (
         printf "${tag}\n";
         python -m sacrebleu -m bleu macrof microf macrobleuf microbleuf chrf \
-            --chrf-beta 1 --rebleu-beta 1 --force -b -l $lang_pair $ref_file < $sys_file;
-        python -m sacrebleu -m chrf --chrf-beta 3 --force -b  -l $lang_pair $ref_file < $sys_file;
+            --chrf-beta 1 --rebleu-beta 1 --force -b -l $lang_pair -tok $tokr $ref_file < $sys_file;
+        python -m sacrebleu -m macrof microf chrf --chrf-beta 3 --rebleu-beta 3 --force -b  -l $lang_pair -tok $tokr $ref_file < $sys_file;
     ) | tr '\n' '\t'
     
     echo ""
@@ -112,11 +120,17 @@ function print_sig {
     ref_file=$2
     lang_pair=$3
 
-
+    tokr='intl'
+    if [[ $lang_pair =~ .*-zh ]]; then
+	tokr='zh'
+    elif [[ $lang_pair =~ .*-zh ]]; then
+	tokr='ja-mecab'
+    fi
+    
     export PYTHONPATH=$SACREBLEU
     ( python -m sacrebleu -m bleu macrof microf macrobleuf microbleuf chrf \
-        --chrf-beta 1 --rebleu-beta 1 --force -l $lang_pair $ref_file < $sys_file;
-    python -m sacrebleu -m chrf --chrf-beta 3 --force -l $lang_pair $ref_file < $sys_file;
+        --chrf-beta 1 --rebleu-beta 1 --force -l $lang_pair -tok $tokr $ref_file < $sys_file;
+    python -m sacrebleu -m macrof microf chrf --chrf-beta 3 --rebleu-beta 3 --force -l $lang_pair -tok $tokr $ref_file < $sys_file;
     ) | cut -f1 -d ' '
 }
 
@@ -150,7 +164,7 @@ export -f print_sig_all
 
 for year in 2019 2018 2017; do  #
     echo "===== $year ===="
-    ( echo "Year Langs System Human BLEU_m BLEU MacroF1 MicroF1 MacroBLEUF MicroBLEUF CHRF1 CHRF3" | tr ' ' '\t'
+    ( echo "Year Langs System Human BLEU_m BLEU MacroF1 MicroF1 MacroBLEUF MicroBLEUF CHRF1 MacroF3 MicroF3 CHRF3" | tr ' ' '\t'
       wmtyear $year | parallel -j $N_JOBS 
     ) > wmt-scores-$year.tsv
 done
