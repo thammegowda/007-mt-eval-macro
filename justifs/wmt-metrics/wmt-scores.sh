@@ -62,7 +62,7 @@ function compute_scores {
     #alias sacrebleu="PYTHONPATH=$SACREBLEU python -m sacrebleu"
     export PYTHONPATH=$SACREBLEU
 
-    tokr='intl'
+    tokr='13a' #'intl'
     if [[ $lang_pair =~ .*-zh ]]; then
 	tokr='zh'
     elif [[ $lang_pair =~ .*-zh ]]; then
@@ -120,7 +120,7 @@ function print_sig {
     ref_file=$2
     lang_pair=$3
 
-    tokr='intl'
+    tokr='13a' #'intl'
     if [[ $lang_pair =~ .*-zh ]]; then
 	tokr='zh'
     elif [[ $lang_pair =~ .*-zh ]]; then
