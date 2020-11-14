@@ -27,6 +27,12 @@ macrof1()  {
     PYTHONPATH=$SACREBLEU python -m sacrebleu $ref -m macrof --rebleu-beta=1 -b < $hyp
 }
 
+microf1()  {
+    hyp=$1
+    ref=$2
+    PYTHONPATH=$SACREBLEU python -m sacrebleu $ref -m microf --rebleu-beta=1 -b < $hyp
+}
+
 chrf1() {
    hyp=$1
    ref=$2
@@ -36,13 +42,16 @@ chrf1() {
 bleurt() {
     hyp=$1
     ref=$2
+    
     bleurt_base="python -m bleurt.score -bleurt_checkpoint $BLEURT/bleurt-base-128 -average "
-    $bleurt_base -candidate_file $hyp -reference_file $ref 2> /dev/null || my_exit 5 "BLUERT is not working"
+    PYTHONPATH=$BLEURT $bleurt_base -candidate_file $hyp -reference_file $ref 2> /dev/null || my_exit 5 "BLUERT is not working"
+    #PYTHONPATH=$BLEURT $bleurt_base -candidate_file $hyp -reference_file $ref  || my_exit 5 "BLUERT is not working"
 }
 
 
 main() {
-    echo "Pair BLEU_s BLEU_u MacroF1_s MacroF1_u CHRF1_s CHRF1_u BLEURTmean_s BLEURTmean_u BLEURTmedian_s BLEURTmedian_u"
+    echo -n "Pair BLEU_s BLEU_u MacroF1_s MacroF1_u MicroF1_s MicroF1_u CHRF1_s CHRF1_u"
+    echo " BLEURTmean_s BLEURTmean_u BLEURTmedian_s BLEURTmedian_u"
 
     for pair in *-en en-*; do
         src=$(echo $pair/src/*.*)
@@ -57,6 +66,8 @@ main() {
         echo -n "$(bleu $unmt $ref) "
         echo -n "$(macrof1 $snmt $ref) "
         echo -n "$(macrof1 $unmt $ref) "
+        echo -n "$(microf1 $snmt $ref) "
+        echo -n "$(microf1 $unmt $ref) "	
         echo -n "$(chrf1 $snmt $ref) "
         echo -n "$(chrf1 $unmt $ref) "
 
@@ -69,3 +80,26 @@ main() {
 }
 
 main
+
+somefunc(){ 
+pair=de-en
+
+ref=$(echo $pair/ref/*.*)
+snmt=$(echo $pair/snmt/*.*)
+unmt=$(echo $pair/unmt/*.*)
+echo "$snmt $ref"
+
+
+bleurt <(head $snmt)  <(head $ref)
+
+
+tmp=$(bleurt $snmt  $ref | cut -d' ' -f2,4 )
+read mean_s median_s <<< "$tmp"
+echo "tmp=$tmp mean=$mean_s median=$median_s"
+
+echo "$unmt $ref"
+tmp=$(bleurt  $unmt $ref | cut -d' ' -f2,4)
+
+read mean_u median_u <<< "$tmp"
+echo "tmp=$tmp $mean_s $mean_u $median_s $median_u "
+}
