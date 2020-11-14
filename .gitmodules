@@ -1,6 +1,6 @@
-[submodule "tangled"]
-	path = tangled
-	url = git@github.com:nitikam/tangled.git
-[submodule "justifs/bleurt"]
-	path = justifs/bleurt
-	url = git@github.com:thammegowda/bleurt.git
+[submodule "libs/bleurt"]
+	path = libs/bleurt
+	url = https://github.com/thammegowda/bleurt.git
+[submodule "libs/sacrebleu"]
+	path = libs/sacrebleu
+	url = git@github.com:isi-nlp/sacrebleu.git
