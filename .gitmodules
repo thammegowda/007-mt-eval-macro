@@ -4,3 +4,6 @@
 [submodule "libs/sacrebleu"]
 	path = libs/sacrebleu
 	url = git@github.com:isi-nlp/sacrebleu.git
+[submodule "justifs/webnlg-human-evaluation"]
+	path = justifs/webnlg-human-evaluation
+	url = git@gitlab.com:thammegowda/webnlg-human-evaluation.git
