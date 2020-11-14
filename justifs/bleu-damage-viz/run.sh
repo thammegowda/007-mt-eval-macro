@@ -6,7 +6,7 @@
 #oh wait, sacrebleu should come from https://github.com/isi-nlp/sacrebleu
 # make sure the already installed sacrebleu is as new as sacrebleu-1.4.14 
 export PYTHONPATH=../sacrebleu
-export PYTHONPATH=../../../rebleu/
+export PYTHONPATH=../../libs/sacrebleu/
 
 export N_CPUS=20
 
