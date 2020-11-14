@@ -32,7 +32,7 @@ function echoerr {
 
 
 # cloned from https://github.com/isi-nlp/sacrebleu
-export SACREBLEU="/nas/material02/users/tg/projects/beter-bleu/rebleu"
+export SACREBLEU="../../libs/sacrebleu"
 [[ -d $SACREBLEU ]] || exit_log 2 "$SACREBLEU not found"
 
 
