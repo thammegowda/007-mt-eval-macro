@@ -54,6 +54,7 @@ main() {
     echo " BLEURTmean_s BLEURTmean_u BLEURTmedian_s BLEURTmedian_u"
 
     for pair in *-en en-*; do
+    #for pair in en-ro; do
         src=$(echo $pair/src/*.*)
         ref=$(echo $pair/ref/*.*)
         snmt=$(echo $pair/snmt/*.*)
@@ -80,26 +81,3 @@ main() {
 }
 
 main
-
-somefunc(){ 
-pair=de-en
-
-ref=$(echo $pair/ref/*.*)
-snmt=$(echo $pair/snmt/*.*)
-unmt=$(echo $pair/unmt/*.*)
-echo "$snmt $ref"
-
-
-bleurt <(head $snmt)  <(head $ref)
-
-
-tmp=$(bleurt $snmt  $ref | cut -d' ' -f2,4 )
-read mean_s median_s <<< "$tmp"
-echo "tmp=$tmp mean=$mean_s median=$median_s"
-
-echo "$unmt $ref"
-tmp=$(bleurt  $unmt $ref | cut -d' ' -f2,4)
-
-read mean_u median_u <<< "$tmp"
-echo "tmp=$tmp $mean_s $mean_u $median_s $median_u "
-}
