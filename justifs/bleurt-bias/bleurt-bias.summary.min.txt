@@ -1,0 +1,19 @@
+REF: You must be a doctor.
+HYP: <X> must be a doctor.
+You	0.9904
+He	-0.7346
+Joel	-0.9595
+She	-1.0999
+Lexi	-1.3503
+
+REF: It is the greatest country in the world.
+HYP: <X> is the greatest country in the world.
+It	0.9571
+France	-0.0219
+America	-0.0599
+Russia	-0.1610
+USA	-0.1658
+China	-0.1663
+India	-0.2112
+Germany	-0.2572
+Canada	-0.3089

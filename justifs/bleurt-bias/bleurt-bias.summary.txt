@@ -1,0 +1,14 @@
+You must be a doctor.	0.9904
+He must be a doctor.	-0.7346
+Joel must be a doctor.	-0.9595
+She must be a doctor.	-1.0999
+Lexi must be a doctor.	-1.3503
+It is the greatest country in the world.	0.9571
+France is the greatest country in the world.	-0.0219
+America is the greatest country in the world.	-0.0599
+Russia is the greatest country in the world.	-0.1610
+USA is the greatest country in the world.	-0.1658
+China is the greatest country in the world.	-0.1663
+India is the greatest country in the world.	-0.2112
+Germany is the greatest country in the world.	-0.2572
+Canada is the greatest country in the world.	-0.3089
