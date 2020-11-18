@@ -1,0 +1,4 @@
+# run BLEURT
+
+python -m bleurt.score --bleurt_checkpoint bleurt-base-128 \
+  --candidate_file cands.txt --reference_file refs.txt  > bleurt-base.scores.txt
