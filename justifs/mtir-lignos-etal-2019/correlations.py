@@ -7,28 +7,45 @@
 import logging as log
 from pathlib import Path
 import pandas as pd
+from scipy.stats import pearsonr, kendalltau
 
 log.basicConfig(level=log.INFO)
 
 
 def main():
-    files = [Path('MTIR-CSEN-Europarl-BM25.txt'), Path('MTIR-DEEN-Europarl-BM25.txt')]
-    corr_dir = Path('correlations')
-    corr_dir.mkdir(exist_ok=True)
-    drops = ['Lang', 'Size', 'BPE'] # these cols dont need correlations
-    for file in files:
-        table = pd.read_table(file)
+    file = 'MTIR-scores-all-corrected.txt'
+    table = pd.read_table(file)
+    table['Group'] = table['Lang'] + ' ' + table['Dataset'] + ' ' + table['Model']
+    table.drop(columns=['Lang', 'Dataset', 'Model'], inplace=True)
+    groups = table.groupby('Group')['Group'].count()
 
-        table.drop(columns=drops, inplace=True)
+    ir_mets = 'MAP P10 R10 RBO NDCG'.split()
+    mt_mets = 'BLEU CHRF1 MacroF1 MicroF1 BLEURTMean BLEURTMedian'.split()
 
-        print(table)
-        ##return
-        for method in ['pearson', 'spearman', 'kendall']:
-            corr_df = table.corr(method=method)
-            out_file = corr_dir / f'{file.name.replace(".txt", "")}.{method}.tsv'
-            print(f"====={out_file}====")
-            print(corr_df)
-            corr_df.to_csv(out_file, sep='\t', float_format='%.5f')
+    corr_methods = [('kendall', kendalltau), ('pearson', pearsonr)]
+    alpha = 0.05
+
+    header = ['Group', 'IR'] + mt_mets
+
+    for corr_name, corr_func in corr_methods:
+        result = []
+        for group_name, _ in groups.items():
+            group = table[table['Group'] == group_name]
+            assert len(group) == 16
+            for ir_met in ir_mets:
+                row = [group_name, ir_met]
+                for mt_met in mt_mets:
+                    # print(row, mt_met)
+                    corr_val, p_val = corr_func(group[mt_met], group[ir_met])
+                    corr_val = f'{abs(corr_val):.3f}'
+                    row.append(('*' if p_val >= alpha else '') + corr_val)
+                result.append(row)
+
+        res = pd.DataFrame(result, columns=header)
+        out_file = f'MTIR-{corr_name}.csv'
+        log.info(f"Saving {out_file}")
+        res.to_csv(out_file, sep='\t')
+
 
 
 if __name__ == '__main__':
