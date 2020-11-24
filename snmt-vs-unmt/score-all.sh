@@ -36,13 +36,13 @@ microf1()  {
 chrf1() {
    hyp=$1
    ref=$2
-   PYTHONPATH=$SACREBLEU python -m sacrebleu $ref -m chrf --chrf-beta=1 -b < $hyp
+   PYTHONPATH=$SACREBLEU python -m sacrebleu $ref -m chrf -w 3 --chrf-beta=1 -b < $hyp
 }
 
 bleurt() {
     hyp=$1
     ref=$2
-    
+
     bleurt_base="python -m bleurt.score -bleurt_checkpoint $BLEURT/bleurt-base-128 -average "
     PYTHONPATH=$BLEURT $bleurt_base -candidate_file $hyp -reference_file $ref 2> /dev/null || my_exit 5 "BLUERT is not working"
     #PYTHONPATH=$BLEURT $bleurt_base -candidate_file $hyp -reference_file $ref  || my_exit 5 "BLUERT is not working"
@@ -68,7 +68,7 @@ main() {
         echo -n "$(macrof1 $snmt $ref) "
         echo -n "$(macrof1 $unmt $ref) "
         echo -n "$(microf1 $snmt $ref) "
-        echo -n "$(microf1 $unmt $ref) "	
+        echo -n "$(microf1 $unmt $ref) "
         echo -n "$(chrf1 $snmt $ref) "
         echo -n "$(chrf1 $unmt $ref) "
 

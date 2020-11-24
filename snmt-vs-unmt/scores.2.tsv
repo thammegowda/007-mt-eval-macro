@@ -1,0 +1,7 @@
+Pair BLEU_s BLEU_u MacroF1_s MacroF1_u MicroF1_s MicroF1_u CHRF1_s CHRF1_u BLEURTmean_s BLEURTmean_u BLEURTmedian_s BLEURTmedian_u
+de-en 32.7 33.9 38.5 33.6 58.7 57.9 0.5987 0.5804 
+fr-en 31.1 31.2 41.6 33.6 60.5 58.3 0.5909 0.5725 
+ro-en 30.8 29.6 40.3 33.0 59.8 56.5 0.5804 0.5468 
+en-de 24.0 24.0 24.0 23.5 47.7 48.1 0.5327 0.5201 
+en-fr 25.6 27.1 31.9 27.3 53.0 52.3 0.5598 0.5766 
+en-ro 31.2 31.0 34.6 31.0 55.4 53.4 0.5928 0.5671 
