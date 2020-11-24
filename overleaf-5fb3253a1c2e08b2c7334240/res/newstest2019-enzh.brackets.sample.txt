@@ -1,0 +1,20 @@
+SRC: Macedonian President Gjorge Ivanov, an opponent of the plebiscite on the name change, has said he will disregard the vote.
+REF: 马其顿总统奥尔基·伊万诺夫 (Gjorge Ivanov) 是此次更名公民投票的反对者，他表示不会参与投票。
+
+SRC: However, supporters of the referendum, including Prime Minister Zoran Zaev, argue that the name change is simply the price to pay to join the EU and NATO.
+REF: 然而，包括总理佐兰·扎埃夫 (Zoran Zaev) 在内的公投支持者们认为，更名不过是加入欧盟 (EU) 和北大西洋公约组织 (NATO) 所要付出的必然代价。
+
+SRC: The Rev. David Johnson, Father Johnson's son and successor at St. Martin's, proudly called the carillon "the poor people's bells."
+REF: 约翰逊教父的儿子，圣马丁教堂的继承人大卫·约翰逊 (David Johnson) 牧师傲慢地将钟琴称为“穷人的铃声”。
+
+SRC: Mr. Merriweather said that St. Martin's did not replace him.
+REF: 梅利韦瑟 (Merriweather) 称圣马丁教堂并没有找人取代他的位置。
+
+SRC: In an exclusive interview with Fast Company, Berners-Lee joked that the intent behind Inrupt is "world domination."
+REF: 在一次接受《快公司》(Fast Company) 的独家采访中，伯纳斯-李开玩笑称，Inrupt 背后的意图就是“统治世界”。
+
+SRC: Amy Chozick, a writer at large for The Times covering business, politics and media, is the author of the memoir "Chasing Hillary."
+REF: 艾米·柯西克 (Amy Chozick) 是《泰晤士报》商业、政治和媒体板块的特约编辑，也是回忆录《追逐希拉里》(Chasing Hillary) 的作者。
+
+SRC: The Assembly Commission, which is currently drafting legislation to introduce the name changes, said: "The final decision on any descriptors of what Assembly Members are called will of course be a matter for the members themselves."
+REF: 议会委员会 (Assembly Commission) 目前正在对名称变更起草法律，他说：“关于委员会成员最终决定选择用什么名字，这是他们自己的事情。”

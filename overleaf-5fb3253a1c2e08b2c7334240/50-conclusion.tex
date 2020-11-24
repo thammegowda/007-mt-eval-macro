@@ -1,0 +1,14 @@
+\section{Discussion and Conclusion}
+We have evaluated NLG in general and MT specifically as a multi-class classifier, and illustrated the differences between micro- and macro- averages using \mif1 and \maf1 as examples (Section~\ref{sec:mt-as-cls}).
+\maf1 captures semantic adequacy better than \mif1 (Section~\ref{sec:webnlg}).
+\bleu, being a micro-averaged measure, served well in an era when generating fluent text was at least as difficult as generating adequate text. Since we are now in an era in which fluency is taken for granted and semantic adequacy is a key discriminating factor, macro-averaged measures such as \maf1 are better at judging the generation quality of MT models (Section~\ref{sec:wmt-metrics}).
+We have found that another popular metric, \chrf1, also performs well on direct assessment,
+%as it uses character level n-grams that offer robustness to morphological variations
+however, being an implicitly micro-averaged measure, it does not perform as well as \maf1 on downstream CLIR tasks (Section~\ref{sec:material}).
+Unlike BLEURT, which is also adequacy-oriented, \maf1 is directly interpretable, does not require retuning on expensive human evaluations when changing language or domain, and does not appear to have uncontrollable biases resulting from data effect.
+%We have also included a comparison to BLEURT, but we reserve our concerns regarding the non-transparency and biased evaluation by such model-based methods. %(Section~\ref{sec:model-bias}). 
+%\maf1 is competitive to alternative methods and has the advantage of 
+It is both easy to understand and to calculate, and is  
+inspectable, enabling fine-grained analysis at the level of individual word types. These attributes make it a useful metric for understanding and addressing the flaws of current models. For instance, we have used \maf1 to compare supervised and unsupervised NMT models at the same operating point measured in \bleu, and determined that supervised models have better adequacy than the current unsupervised models (Section~\ref{sec:unmt}).
+
+Macro-average is a useful technique for addressing the importance of the long tail of language, and \maf1 is our first step in that direction; we anticipate the development of more advanced macro-averaged metrics that take advantage of higher-order and character n-grams in the future. 

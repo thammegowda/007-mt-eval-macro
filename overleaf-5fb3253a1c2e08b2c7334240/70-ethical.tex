@@ -1,0 +1,24 @@
+\section{Ethical Consideration}
+
+Since many machine learning models including NMT are themselves opaque and known to possess data-induced biases~\cite{prates2019-mt-bias}, using opaque and biased evaluation metrics in concurrence makes it even harder to discover and address the flaws in modeling.
+Hence, we have raised concerns about the opaque nature of the current model-based evaluation metrics, and demonstrated examples displaying unwelcome biases in evaluation. We advocate the use of the \maf1 metric, as it is easily interpretable and offers the explanation of score as a composition of individual type performances.
+%All these attributes are helpful to understand and address the flaws of MT models in practice. 
+In addition, \maf1 treats all types equally, and has no parameters that are directly or indirectly estimated from data sets. Unlike \maf1, \mif1 and other implicitly or explicitly micro-averaged metrics assign lower importance to rare concepts and their associated rare types. 
+The use of micro-averaged metrics in real world evaluation could lead to marginalization of rare types.
+
+% underrepresented ?
+%Hence, we strongly recommend the use of transparent, macro-averaged metrics such as \maf1. 
+
+\textit{Failure Modes:}
+The proposed \maf1 metric is not the best measure of fluency of text. 
+Hence we suggest caution while using \maf1 to draw fluency related decisions. \maf1 is inherently concerned with \textit{words}, and assumes the output language is easily segmentable into word tokens. Using \maf1 to evaluate translation into alphabetical languages such as Thai, Lao, and Khmer, that do not use white space to segment words, requires an effective tokenizer. Absent this the method may be ineffective; we have not tested it on languages beyond those listed in Section~\ref{sec:apphuman}.
+
+\textit{Reproducibility:}
+Our implementation of \maf1 and \mif1 has the same user experience as \bleu{} as implemented in \textsc{SacreBleu}; signatures are provided in Section~\ref{sec:appmetrics}. 
+In addition, our implementation is  compuationally efficient, and has the same (minimal) software and hardware requirements as \bleu{}. 
+We plan to make our implementation available to the public after the anonymity period. All data for MT and NLG human correlation studies is publicly available and documented. Data for reproducing the IR experiments in Section~\ref{sec:lignos-etal} is also publicly available and documented. The data for reproducing the IR experiments in Section~\ref{sec:material} is only available to participants in the CLSSTS shared task. 
+% by submitting a pull request to the upstream \textsc{SacreBleu} repository
+
+\textit{Climate Impact:} Our proposed metrics are in par with \bleu{} and such model-free methods, which consume significantly less energy than most model-based evaluation metrics.
+
+%the problems indicated in Table~\ref{tab:bleurt-bias}.

@@ -1,0 +1,196 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tg{Anything below here is saved for future use (in thesis). these are not going into paper. }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{BLEU and CHRF Definition}
+\label{sec:bleu-def}
+
+BLEU~\cite{papineni-etal-2002-bleu} has become the de-facto automatic evaluation for MT.
+Except a word tokenizer, BLEU does not use any other linguistic resources such as parsers, synonyms etc. 
+In addition, BLEU is computationally efficient; works reasonably well on all languages with word boundaries, and has advanced MT research for almost two decades now.
+
+
+A key component of BLEU is $$\text{ModifiedPrecision} = \frac{\text{TotalMatch}}{\text{TotalPredictions}}$$
+
+On a test corpus of $m$ pairs $$ \mathcal{T} = \{ (h^{(i)}, y^{(i)}) | i = 1,2,3...m \} $$ where $h$ is hypothesis, and $y$ is reference aka gold translation.
+
+$$match_w = min \{ count(w, h), count(w, y) \}$$ 
+
+ ModifiedPrecsion, $P_n$ defined for n-grams, $n=\{1, 2, 3, 4\}$ as
+ $$ P_n = \frac{\sum_{(h, y) \in \mathcal{T}}  \sum_{k \in h} match_{k} (h, y) }{ \sum_{k' \in \mathcal{T}}  \sum_{k' \in h'} count(k, h) }$$  
+ where $k$ is an n-gram in sentence $h$ or $y$.
+
+Does not make any distinction between word types. 
+Opinion: Should this be called $ModifiedAccuracy$ instead of $ModifiedPrecision$ ?
+
+BLEU reduce the n-gram precisions $P_1, P_2, P_3, P_4$ using geometric mean, as:
+$$P = \sqrt[4]{P_1 \cdot P_2 \cdot P_3 \cdot P_4} = exp(\frac{1}{4}\sum_{n=1}^4  \log P_n )$$
+
+Further, a possible generalization was proposed as:  $$P= exp(\sum_{n=1}^4 w_n \log P_n ) \text{ such that } \sum_{n=1}^4 w_n = 1$$
+However, such generalization is rarely used in practice as weights $w_1, w_2, w_3, w_4$ are subjective to corpora. 
+Hence, in practice, equal weights  are assigned to all the modified precisions of n-gram orders leading to \textit{macro or unweighted} geometric mean.
+
+Lastly, to compensate the absence of recall measure, a term named brevity penalty, $BP$, is used a scaler: 
+$$ BLEU = BP \cdot P = BP \cdot exp(\frac{1}{4}\sum_{n=1}^4  \log P_n ) $$
+The scaler $BP$ is computed such that it penalizes the short translation that may arise due to poor recall.
+Let $H$ be system hypotheses length, $R$ be references length. 
+$$ BP = \begin{cases} 
+  1                    & H > R \\
+ e^{(1 - \frac{R}{H})} & H \le R 
+ \end{cases}  = min \{1,  e^{(1 - \frac{R}{H})}\} $$
+
+BLEU was originally devised to work with multiple references, however nowadays use of multiple references are rare. 
+
+
+
+\subsection{\chr{F}{}1 and \chr{F}{}3}
+
+\citet{popovic-2015-chrf} extend the idea of (modified-)precision of word n-grams of \bleu\ to characters (\chr{P}{}) n-grams, but unlike \bleu\ they also consider (modified-)recall (\chr{R}{n}) to compute F1 measure (\chr{F}{n} as harmonic mean of \chr{P}{n} and \chr{R}{n}, with a $\beta$ to weight toward recall.
+They did not do an exhaustive search for values of $N$ and $\beta$: they consider $N=6$, i.e. up to 6-grams with $\beta=1$ and $\beta=3$.
+
+$$\chrx{F}\beta = \frac{1}{N} \sum_{n=1}^{N}(1 + \beta^2) \frac{\chrx{P}_n \cdot \chrx{R}_n}{ \beta^2 \cdot \chrx{P}_n + \chrx{R}_n}$$
+
+Even though the \chr{F}{}1 and \chr{F}{}3 compute F1 measure similar to our work, note that the \chr{P}{n} \chr{R}{n} are inherently micro-averaged by n-gram frequency as in \bleu \footnote{The implementation detail is not provided in \cite{popovic-2015-chrf}, but verified in the implementation of SacreBLEU-\chr{F}{} \url{https://github.com/mjpost/sacrebleu} (accessed July 2020) }.
+
+
+
+
+\section{MT Autoeval Methods}
+\begin{comment}
+
+\begin{table}[ht]
+\footnotesize
+\begin{tabular}{ll}
+ \textbf{Method}                            & \textbf{Category} \\
+  \bleu \cite{papineni-etal-2002-bleu}       & Token-based   \\
+  NIST \cite{nist2002}                      & Token-based   \\  
+  TER  \cite{snover2006TER}                 & Token-based    \\      
+  METEOR \cite{banerjee-lavie-2005-meteor}  & Resource-based? \\  
+  %RIBES \cite{isozaki-etal-2010-autoeval}   & ?           \\  
+  HyTER \cite{dreyer-marcu-2012-hyter}      & Resource-based \\
+  BEER \cite{stanojevic-simaan-2014-beer}   & Model-based  \\
+  \chrf{} \cite{popovic-2015-chrf}             & Resource-free \\      
+  ESIM \cite{mathur-etal-2019-ESIM}         & Model-based \\  
+  YiSi \cite{lo-2019-yisi}                  & Model-based            \\
+  BLEURT \cite{sellam-etal-2020-bleurt}     & Model-based \\ 
+  % ZeroShotPP \cite{thompson2020paraphrase-eval} & Model-based \\
+\end{tabular}
+\caption{An overview of automatic evaluation methods. }
+\label{tab:eval-measures}
+\end{table}
+
+\end{comment}
+
+\section{Metrics categories} 
+\begin{enumerate}
+    \item \textit{Resource-light}: These methods do not rely on linguistic resources \textit{except a tokenizer}. We consider tokenizer as a basic linguistic resource that is relatively easier to obtain than others, and it may often be borrowed from other languages.  
+    The primary example for this category is BLEU \cite{papineni-etal-2002-bleu}.
+    Since the choice of tokenizer varies based on language, and introduces some looseness in matching, the scores across publications over a long time span are only comparable if and only if the tokenizer is guaranteed to be the same. 
+    The MT community has circumvent this limitations by making a tokenizer as a standard tokenizer (eg: NIST 13a, international etc).
+    Other examples: NIST \cite{doddington2002-nist}, TER \cite{snover2006TER}, 
+    
+    \item \textit{Resource-free}: These methods do not rely on any linguistic resources. 
+    These are readily portable to all languages and domains, as there is no dependence on whatsoever, and the scores are readily comparable across the publications. This category is relatively newer and less explored. E.g. CHRF \cite{popovic-2015-chrf}
+    
+    \item \textit{Resource-dependent}: These methods rely on resources that are not readily available or harder to construct for most languages. 
+    This constraint limits their application to only a few languages to which resources are available. 
+    The scores are comparable across publications over the decades if the resources used are guaranteed to be the same. The community has not worked towards establishing the standards, hence these methods are not popular.
+    E.g. METEOR \cite{banerjee-lavie-2005-meteor}, HyTER \cite{dreyer-marcu-2012-hyter}
+
+    
+    \item \textit{Model-dependent}: These methods use machine learned model to predict the human judgements. 
+
+    The core principle behind these methods is that they either use a pretrained neural model or had engineered features, which are then used by a regressor model to estimate human judgement scores.
+    Such pretrained models are easier to obtain than the linguistic-resources of the previous category, hence this category is an active area of research.  
+    Most of these methods use pretrained language models on target language to obtain a sentence representation for reference and hypothesis, and computes the match. e.g. ESIM \cite{mathur-etal-2019-ESIM}, YiSi \cite{lo-2019-yisi}, RUSE, BERTScore, BLEURT
+    
+    However, there are some \textit{model-dependent} methods that do not use references. Instead, they compute translation quality scores by matching the hypothesis directly against source sentences with the help of a cross-lingual pretrained model. e.g. YiSi \cite{lo-2019-yisi},
+    
+    While these methods are an interesting research direction, we express our following concerns: 
+    
+\begin{enumerate}
+    \item Hidden Biases: Presence of undesired hidden biases in machine learning models is a known phenomenon \tg{cite}. 
+    A bias of our primary interest is a marginalization of rare and minority concepts that affect the generation of rare words\cite{gowda2020finding}. 
+    Since the NMT model is already uninterpretable, when the evaluator is also uninterpretable, and if practitioners are asked with "why an output is assigned with so-and-so score", the explanation practitioners can provide is- "the evaluator model estimated it and we do not know why". 
+    Such a faith on uninterpretable entities in evaluation is against the spirit of science.
+    \tg{Citation from biases literature}
+    
+    \item Instability: Pretrained models are approximations and these approximations improve over the time span, they do not offer the statistical stability over a long span of years to emerge as a de-facto. 
+    
+    % \item Paradox: a machine learned model evaluating a machine learned model; a robot testing a robot paradox (\tg{citation and a formal name}). 
+\end{enumerate}
+
+\end{enumerate}
+
+\subsection{BLEU criticism}
+In this work, we emphasize and address these two shortcomings of BLEU:
+\begin{enumerate}
+\item BLEU is based on modified-precision of n-grams which is performance is implicitly weighted by frequency of n-grams (i.e micro-averaged).
+ The rare n-grams have lesser importance than the frequent n-grams in BLEU metric. 
+ However, the reality is contrary: rare words carry more \textit{information}\footnote{as in information theory} than frequent words.
+ To illustrate this, consider the below two sentences where some words are missing due to poor recall from a model, which of these can be interpreted?\\
+X: \rule{5mm}{0.15mm} of U.S. \rule{5mm}{0.15mm} deaths are linked to nursing homes .\\
+Y: 43\% \rule{5mm}{0.15mm} U.S. Coronavirus deaths are linked \rule{5mm}{0.15mm} nursing homes .\\
+
+\item BLEU does not provide performance breakdown per n-gram types. A detailed breakdown such as precision, recall and F-measure of n-grams are useful in practice to improve the model performance by including more training examples to the n-grams that have poorer performance.
+\end{enumerate}
+
+
+\section{UNMT and SNMT}
+Table~\ref{tab:snmt_better_bleu} and Table~\ref{tab:unmt_better_bleu} show the top 10 sentences when BLEU favors SNMT and UNMT respectively.
+
+\begin{table*}[t]
+    \centering
+    \footnotesize
+    % \scalebox{0.8}{%
+    \begin{tabular}{ l l l c c }
+    
+       & SNMT & UNMT & $\beneficial{S}{U}{MacroF1}$ & $\beneficial{S}{U}{BLEU}$ \\ 
+$1^{st}$ & \_word\_order    &	\_word\_order, \textbf{untranslation}, \textbf{wrong\_end} & 1.99E-02 & 4.76E-02 \\
+$2^{nd}$ & \_diff\_spelling &	\_synonym, \_word\_order, \_punctuation&7.56E-03& 4.61E-02 \\
+$3^{rd}$ & \_extra\_det     &	\_synophrase, \_synonym, \textbf{number}, &2.95E-02& 4.39E-02 \\
+       &               &\textbf{measure\_word}, \textbf{untranslation} & \\
+$4^{th}$ & \_synonym&	\_synonym, \_punctuation, \_extra\_adv&1.19E-02& 4.22E-02\\
+$5^{th}$ & \_word\_order, \_synonym, &	\_synonym, \textbf{wrong\_verb}, \textbf{punctuation}&5.51E-03& 2.86E-02\\
+& \_punctuation&&\\
+$6^{th}$ & \_synonym, \_word\_order&	\_synonym, \_word\_order, \_omit\_verb&1.03E-02& 2.70E-02\\
+$7^{th}$ & \textbf{wrong\_active\_passive}, &	\_synonym, \textbf{wrong\_active\_passive}, &2.70E-02&2.58E-02\\
+& \textbf{omit\_adv}, \textbf{repetition}&extra\_phrase, \textbf{wrong\_pronoun}, &\\
+& & \textbf{wrong\_tense} & \\
+$8^{th}$ & \_synonym, \_inflection&	\textbf{untranslation}, wrong\_noun&4.43E-02& 2.54E-02\\
+$9^{th}$ & \_synonym &	\textbf{untranslation}, \textbf{wrong\_noun}&3.66E-02& 2.52E-02\\
+$10^{th}$ & \_synonym&	\_synonym, \textbf{wrong\_noun}, \textbf{wrong\_verb}, &9.46E-03& 2.46E-02\\
+
+    \end{tabular}%
+    % }
+    \caption{Problems for top 10 sentences such that $\beneficial{S}{U}{BLEU}$ favors SNMT over UNMT for De-En. }
+    \label{tab:snmt_better_bleu}
+\end{table*}
+
+
+\begin{table*}[t]
+    \centering
+    % \scalebox{0.8}{%
+    \footnotesize
+    \begin{tabular}{lllcc}
+    
+ & SNMT  & UNMT & $\beneficial{S}{U}{MacroF1}$&$\beneficial{S}{U}{BLEU}$\\ 
+$1^{st}$ &\textbf{wrong\_noun}, \textbf{wrong\_verb}	&&-8.84E-03&-3.88E-02\\
+$2^{nd}$ &\_punctuation	&&-9.27E-04&-3.67E-02\\
+$3^{rd}$ &\_symbol	&&-1.66E-02&-3.40E-02\\
+$4^{th}$ &\textbf{wrong\_adj}, \textbf{wrong\_noun}	&&-1.56E-02&-3.22E-02\\
+$5^{th}$ &\_tense, \textbf{word\_order}, \textbf{wrong\_meaning}, &	\textbf{untranslation}&-6.70E-03&-3.16E-02\\
+&\textbf{wrong\_active\_passive} && \\
+$6^{th}$ &\_word\_order, \_synonym, \textbf{extra\_conj}&	\textbf{untranslation}&-2.69E-03&-3.07E-02\\
+$7^{th}$ &\_word\_order, \textbf{omit\_name}&	\textbf{untranslation}, \textbf{wrong\_noun}&-1.47E-02&-2.95E-02\\
+$8^{th}$ &\_synonym, \textbf{wrong\_verb}, &	\textbf{time}, \textbf{untranslation}&-1.90E-02&-2.88E-02\\
+&\textbf{wrong\_active\_passive} && \\
+$9^{th}$ &\_word\_order, \textbf{wrong\_phrase}&&3.72E-04&-2.86E-02\\	
+$10^{th}$ &\_punctuation, \textbf{wrong\_verb}&	\_synonym&-4.64E-03&-2.77E-02\\
+
+    \end{tabular}%
+    % }
+    \caption{Problems for top 10 sentences such that $\beneficial{S}{U}{BLEU}$ favors UNMT over SNMT for De-En. }
+    \label{tab:unmt_better_bleu}
+\end{table*}

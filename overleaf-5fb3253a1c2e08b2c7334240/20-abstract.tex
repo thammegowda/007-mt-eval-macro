@@ -1,0 +1,25 @@
+%Information theory and Zipf's law states that much of the information of a language system is in the long tail, however, the current metrics for natural language generation~(NLG) place only a little importance on the long tail. 
+
+% JON: What does adequacy mean in general for NLG? That only really makes sense for MT unless you make a long argument. The NLG tests are mostly aimed at that so let's just stick with MT
+
+%The  current  corpus-level  evaluation  metrics for  natural  language  generation  (NLG)  are good  in  capturing  the  fluency,  however,  fall short  in  capturing  adequacy.
+
+%Recently, machine learning model-based metrics that are trained to predict quality at segment-level have attracted the attention due to their high performance on certain benchmark tasks. 
+%However, the non-transparency, and biased nature of model-based evaluation are concerning for real-world applications.
+% and achieves higher association with adequacy than others. 
+%\maf1 is easily interpretable, free from data-induces biases.% \  higher importance to rare types from long tail.
+%\wy{Did we define MacroF1 or just reexamine its use in generation?}
+%and another that assigns higher importance to frequent types similar to current methods.  We compare them along with popular alternatives and show that our method that assigns higher importance to the Long Tail is very useful.
+%We justify its utility in the direct evaluation of NLG systems as well as indirect evaluation on downstream tasks.
+%and has the capacity to discriminate between structurally different machine translation methods in a way other methods cannot. 
+
+While traditional corpus-level evaluation metrics for machine translation correlate well with fluency, they struggle to reflect adequacy.
+Model-based MT metrics trained on segment-level human judgments have emerged as an attractive replacement due to strong correlation results.
+These models, however, require potentially expensive re-training for new domains and languages.
+Furthermore, their decisions are inherently non-transparent and appear to reflect unwelcome biases. 
+We explore the simple type-based classifier metric, \maf1, and study its applicability to MT evaluation. 
+We find that \maf1 is competitive on direct assessment, and outperforms others in indicating downstream cross-lingual information retrieval task performance.
+Further, we show that \maf1 can be used to effectively compare supervised and unsupervised neural machine translation, and reveal significant qualitative differences in the methods' outputs.\footnote{Tools and analysis are available at \myurl{https://github.com/HELD-FOR-ANONYMITY}
+}
+
+%\myurl{https://github.com/thammegowda/007-mt-eval-macro}

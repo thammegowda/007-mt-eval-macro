@@ -1,0 +1,205 @@
+
+\begin{table}[t]
+% \resizebox{\textwidth}{!}{%
+\centering
+\footnotesize
+\begin{tabular}{l rr|rr}
+\multicolumn{1}{}{} & \multicolumn{2}{c|}{BLEU}   & \multicolumn{2}{c}{\maf1}\\
+     & SNMT    & UNMT   & SNMT &  UNMT \\ \hline\hline
+DEEN & 32.7    & 33.9   & 38.5  & 33.6 \\
+ENDE & 24.0    & 24.0   & 24.0  & 23.5 \\
+FREN & 31.1    & 31.2   & 41.6  & 33.6 \\
+ENFR & 25.6    & 27.1   & 31.9  & 27.4 \\
+ROEN & 30.8    & 29.6   & 40.3  & 33.0 \\
+ENRO & 31.2    & 31.0   & 34.6  & 31.0 \\ 
+\end{tabular}%
+% }
+\caption{Even though UNMT models score similar \bleu\ as SNMT models, they score significantly lower \maf1.}
+\label{tab:unmt_vs_snmt}
+\end{table}
+
+
+\section{Application in Qualitative Evaluation of Unsupervised Neural Machine Translation}
+\label{sec:unmt}
+Unsupervised neural machine translation (UNMT) systems trained on massive monolingual data without parallel corpora have made significant progress recently \cite{Artetxe-2018-unmt-iclr,Lample-2018-unmt-iclr,lample-etal-2018-phrase-unmt,yang-etal-2018-unmt,conneau-NIPS2019-xlm,Song-2019-MASS,liu2020mbart}, in some cases yielding test BLEU that is comparable with supervised neural machine translation (SNMT) systems trained on millions of words of parallel data. In this section we leverage MacroF1 to investigate qualitative differences between UNMT and SNMT systems with similar BLEU.
+
+
+\subsection{Experiment Settings}
+
+We compare UNMT and SNMT for English $\leftrightarrow$ German (ENDE, DEEN), English $\leftrightarrow$ French (ENFR, FREN), and English $\leftrightarrow$ Romanian (ENRO, ROEN).
+All our UNMT models are based on XLM \citep{conneau-NIPS2019-xlm}, pretrained by \citet{XLM-UNMT-Models20}. 
+Our SNMT models are selected from the systems submitted to WMT shared tasks~\cite{bojar-EtAl:2014:W14-33,bojar-EtAl:2016:WMT1} which score similar \bleu\ to the available UNMT models.
+For ENDE and DEEN, the WMT submissions' \bleu\ scores differ significantly from the available UNMT models.
+Hence, we train a set of SNMT models for ENDE and DEEN using the standard Transformer-base~\cite{vaswani2017attention} architecture by varying training data and vocabulary sizes, and select the ones that scored similar \bleu\ with the available UNMT models. % following ablation in \citet{gowda2020finding}. 
+%We compare these to SNMT models that have similar BLEU scores with their UNMT counterparts on common test sets.
+%The other models are selected from submitted systems to WMT shared tasks in \cite{bojar-EtAl:2014:W14-33,bojar-EtAl:2016:WMT1}.\footnote{We do not use submitted systems for English $\leftrightarrow$ German because the submitted SNMT systems for NewsTest2019 have BLEU scores that differ significantly from our UNMT models. We thus carefully tune the data size and trained our own models that match UNMT on BLEU scores.} The SNMT models whose scores match with UNMT models are usually trained with smaller parallel corpora. 
+Detailed description of chosen NMT models is in the appendix.\tg{section num?}
+The \bleu\ scores of SNMT and UNMT systems are shown in Table~\ref{tab:unmt_vs_snmt}.
+
+\subsection{Qualitative Differences between UNMT and SNMT}
+
+\begin{table*}[t]
+    \centering
+    % \scalebox{0.8}{%
+    \footnotesize
+    \begin{tabular}{lllcc}
+    
+ & SNMT & UNMT & $\beneficial{S}{U}{\maf1}$&$\beneficial{S}{U}{BLEU}$\\ 
+$1^{st}$ &\_synonym&	\textbf{untranslation}, \textbf{wrong\_noun}& 7.11E-02& 2.25E-02\\
+$2^{nd}$ &\_synonym&	\textbf{untranslation}& 6.37E-02& 1.12E-02\\
+$3^{rd}$ &\_synonym&	\textbf{untranslation}, \textbf{wrong\_noun}& 5.15E-02& 2.06E-02\\
+$4^{th}$ &\_synonym, \_word\_order&	\textbf{dependency}, \textbf{truncation}, \textbf{word\_order}& 4.44E-02& -8.68E-04\\
+$5^{th}$ &\_synonym, \_inflection&	\textbf{untranslation}, \textbf{wrong\_noun}& 4.43E-02& 2.54E-02\\
+$6^{th}$ &\_inflection, \_word\_order&	\textbf{number}& 4.34E-02& 7.60E-03\\
+$7^{th}$ &\textbf{day\_of\_week}, \_word\_order&	\_synonym, \textbf{day\_of\_week}, \textbf{weird\_char}& 4.09E-02& 1.76E-02\\
+$8^{th}$ &\_synonym&	\textbf{untranslation}, \textbf{wrong\_noun}& 3.66E-02& 2.52E-02\\
+$9^{th}$ &\_punctuation, \_synonym&	\textbf{truncation}& 3.66E-02& -1.06E-02\\
+$10^{th}$ &\_synophrase, \_word\_order&	\_word\_order, \textbf{untranslation}& 3.61E-02& 5.54E-03\\
+
+    \end{tabular}
+    % }
+    \caption{Problems for top 10 $\beneficial{S}{U}{\maf1}$ sentences such that \maf1 favors SNMT over UNMT for De-En. The labels starting with an underscores are problems that hurt evaluation metrics but are not real translation problems. \tg{Not sure if we need the numbers; seems too much info}}
+    \label{tab:snmt_better_mf1}
+\end{table*}
+
+
+
+\begin{table*}[t]
+    \centering
+    % \scalebox{0.8}{
+    \footnotesize
+    \begin{tabular}{lllcc}
+    
+& SNMT & UNMT &$\deleterious{S}{U}{\maf1}$&$\deleterious{S}{U}{BLEU}$\\ 
+$1^{st}$ &\textbf{unrelated\_other\_lang}&&5.48E-02&5.30E-03\\
+$2^{nd}$ &\textbf{untranslation}&&4.46E-02&1.07E-02\\
+$3^{rd}$ &\textbf{omit\_verb}, \textbf{untranslation}&	\textbf{wrong\_adj}, \textbf{wrong\_verb}&4.13E-02&1.15E-02\\
+$4^{th}$ &\textbf{wrong\_name}&	\textbf{word\_order}& 4.00E-02&1.82E-02\\
+$5^{th}$ &\_synophrase, \textbf{punctuation}&	\textbf{punctuation}, \textbf{untranslation}& 3.95E-02&5.36E-03\\
+$6^{th}$ &\textbf{truncation}, \textbf{wrong\_meaning}&	\textbf{untranslation}& 3.51E-02&2.82E-03\\
+$7^{th}$ &\_synonym, \textbf{wrong\_name}&	\textbf{omit\_verb}, \textbf{wrong\_adj}& 3.41E-02&5.76E-03\\
+$8^{th}$ &\textbf{unk}, \textbf{untranslation}&	&3.40E-02&1.38E-02\\
+$9^{th}$ &\_punctuation, \textbf{preposition}&&3.26E-02&1.87E-02\\
+$10^{th}$ &\textbf{truncation}, \textbf{extra}&	\textbf{extra}&3.11E-02&7.43E-03\\ 
+    \end{tabular}
+    % }
+    \caption{Problems for top 10 $\deleterious{S}{U}{\maf1}$ sentences such that MacroF1 favors UNMT over SNMT for De-En. \tg{Not sure we need the numbers; seems too much info}}
+    \label{tab:unmt_better_mf1}
+\end{table*}
+
+% \jon{i think this is a quantitative/BLEU argument...for large data scenarios, SNMT models built on all the available parallel data result in higher bleu on test sets than UNMT models built on all the available monolingual data (that can be leveraged). The question we're asking in this investigation is, at comparable BLEU, do SNMT and UNMT exhibit qualitative differences, and can these differences be detected by other metrics?}.
+
+We observe in Table~\ref{tab:unmt_vs_snmt} that despite the comparable \bleu\ scores,  SNMT models have consistently higher \maf1 than the UNMT models for all six translation directions. 
+We thus investigate \textit{why} the translation behaviors of SNMT and UNMT models on the same input sentences lead to a divergence of relative opinion as measured by these two metrics.
+
+% \jon{Another quantitative argument for better...using MacroF1 (which presumably has been previously introduced...in your talk you'll have to discuss this, probably in a different order) indicates the performance is not in fact comparable. So the investigative question is, what contributes to this difference of opinion (i.e. what translation errors affect MacroF1 but don't affect BLEU), and what are the qualitative properties of these contributions?}  
+
+% \jon{trying to explain the sentence removal delta scheme...}
+
+Since \bleu\ and \maf1 are corpus-level metrics, we use a \textit{maximum difference discriminator} approach for illustrative sentence selection to manually investigate the differences at sentence level.
+The approach is defined as follows: Consider a source-language corpus $X$ and a corpus of translations $C$ with corpus-level metric $M$ that produces score $C_M$. 
+For some $x \in X$, $C[x]$ is the translation of $x$ in $C$.
+Let $C^{-x} = C \setminus \{C[x]\}$ and $C^{-x}_M$ be the score according to $M$ of $C^{-x}$ (i.e. as if $x$ is not part of the input and its reference is not part of the reference set). 
+Then let $\scoredel{C}{x}{M} = C^{-x}_M - C_M$; if $\scoredel{C}{x}{M} > 0$ we say (the translation of) $x$ is \textit{deleterious} to $C$ with respect to $M$, since the inclusion of $C[x]$ lowers the overall score.
+Now, consider another corpus of translations of $X$, $K$. 
+We define the \textit{deleteriousness of item $x$} that compares $C$ and $K$ with respect to $M$ as $\deleterious{C}{K}{M}(x)$:
+
+\tg{Let $X$, $Y$, and $H$, be a corpus of source, reference, and hypothesis, respectively. Let $M$ be a corpus-level measure such that $M(H, Y) \in \mathbb{R}$ and a higher value implies better translation quality. 
+Let $H[x]$ and $Y[x]$ are hypothesis and reference translations $\forall x \in X$.
+Let $H_{-x} = H \setminus \{H[x]\}$, and similarly $Y_{-x}$. 
+Then, $M(H_{-x}, Y_{-x})$ be the corpus-level score by excluding the hypothesis and reference sentences of $x$.
+We define, $\scoredel{H}{x}{M} = M(H_{-x}, Y_{-x}) - M(H, Y)$.
+If $\scoredel{H}{x}{M} > 0$, $x$ is \textit{deleterious} to $H$ with respect to $M$ as the inclusion of $H[x]$ into $H$ lowers the corpus-level score.
+Now consider another set of translations, $K$, of the same $X$ from a different MT model. 
+We define the \textit{deleteriousness of item $x$} that compares both $H$ and $K$  translation with respect to the method $M$ as $\deleterious{H}{K}{M}(x)$:
+}
+% We define the \textit{maximal net deleterious item} that compares $C$ and $K$ with respect to $M$ as $\deleterious{C}{K}{M}$: \jon{need to broaden this to something like general deleteriousness and then a way of determining nth most deleterious}
+
+% \begin{equation}
+% \deleterious{C}{K}{M} = \mbox{argmax}_{x \in X} \scoredel{C}{x}{M} - \scoredel{K}{x}{M}
+% \label{eq:deleterious}
+% \end{equation}
+
+\begin{equation}
+\deleterious{C}{K}{M}(x) = \scoredel{C}{x}{M} - \scoredel{K}{x}{M}
+\label{eq:deleterious}
+\end{equation}
+
+\noindent such that a sentence that is very deleterious to $C$ \textit{and} very beneficial to $K$ would be selected by $\mbox{argmax}_{x \in X}\deleterious{C}{K}{M}(x)$.
+Let $C$ and $K$ be corpora of translations generated via different approaches (e.g. SNMT vs. UNMT). 
+We use $\mbox{argmax}_{x \in X}\deleterious{C}{K}{M}$ to find behaviors that are regarded as negative to $M$ being exhibited by $C$ but not by $K$.
+An analogous measure, $\mbox{argmax}_{x \in X}\ \beneficial{C}{K}{M}(x)$ finds the most \textit{beneficial} item in $C$ but not in $K$, essentially flipping the signs in Equation~\ref{eq:deleterious}.
+
+% \jon{I think then the evaluation you want to do is to find the change-makers according to macrof1 and see what they do to bleu. the opposite can also be studied}
+
+When we manually examine the top 10 and bottom 10 scored outputs for German-English using $\beneficial{S}{U}{\maf1}$ and $\beneficial{S}{U}{\bleu}$, we find that when SNMT is better, UNMT has more untranslated words while SNMT only has non-important problems like switching word order in a reasonable way or using synonyms (Table~\ref{tab:snmt_better_mf1}). When UNMT is better in terms of metrics, on the other hand, it still has some untranslated words, while SNMT's problems are mixures of wrong words, synonym, and word order (Table~\ref{tab:unmt_better_mf1}).
+
+\subsection{Qualitative Differences between \bleu\ and \maf1}
+
+
+% In order to see how MacroF1 and BLEU differ qualitatively, we look at some extreme cases of translations where MacroF1 and BLEU's rank differ most. We first rank $\beneficial{S}{U}{MacroF1}$ and $\beneficial{S}{U}{BLEU}$ descending separately and aquire the rank differences with
+
+% $$\Delta\mathit{Rank} = \mathit{Rank}(\beneficial{S}{U}{MacroF1}) - \mathit{Rank}(\beneficial{S}{U}{BLEU})$$
+
+In order to see how two metrics $M_1$ and $M_2$ differ qualitatively, we look at some extreme cases of translations where $M_1$ and $M_2$'s rank differ most. We first rank $\beneficial{C}{K}{M_1}$ and $\beneficial{C}{K}{M_2}$ descending separately and define \textit{favorness of $x$ in corpus $C$ by $M_2$ instead of $M_1$} as the rank differences
+
+\begin{equation}
+\begin{split}
+    \deleterious{M_1}{M_2}{Rank}(x) = &\mathit{Rank}(\beneficial{C}{K}{M_1}(x)) \\
+&- \mathit{Rank}(\beneficial{S}{U}{M_2}(x))
+\end{split}
+\label{eq:favorness}
+\end{equation}
+
+The lowest $\deleterious{M_1}{M_2}{Rank}(x)$ (ranked to the front) are sentences whose translations in $C$ are favored by $M_1$ while translations in $K$ are favored by $M_2$, and the highest $\deleterious{M_1}{M_2}{Rank}(x)$ (ranked to the back) are opposite and are sentences whose translations in $C$ are favored by $M_2$ while translations in $K$ are favored by $M_1$.
+
+We manually examine sentences with the top 10 $\deleterious{\maf1}{\bleu}{Rank}(x)$ and $\beneficial{\maf1}{\bleu}{Rank}(x)$ scores (sentences for whom \maf1 and \bleu\ disagree the most), and conclude the following trend in how \maf1 favors SNMT that is more adequate than UNMT (examples shown in Table~\ref{tab:diff_mf1_bleu}):
+
+\begin{table*}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{l|l}
+    
+$3^{rd}$& $\beneficial{S}{U}{MacroF1}$ : 0.014, $\deleterious{S}{U}{BLEU}$: 0.025 \\\hline
+Src & Zu den Finanzierungsmöglichkeiten für Langzeitpflege gehören eine traditionelle \colorbox{pink}{Pflegeversicherung}, eine hybride \\
+&kapitalbindende Lebensversicherung zur Abdeckung dieser Ausgaben oder eine Selbstversicherung mit dem eigenen \\
+&Vermögen – solange Sie das Geld dafür haben.\\\hline
+Ref & Your funding choices for long-term care can include a traditional long-term care insurance policy, a hybrid cash-value \\
+&life insurance policy to help cover these expenses or self-insuring with your own wealth - as long as you have the money.\\\hline
+SNMT& Financing opportunities for long-term care include traditional care insurance, hybrid capital-binding life insurance to \\
+&cover this spending, or self-insurance with your own assets – as long as you have the money for it.,,,,,,,,,,,,,,,,, etc.\\\hline
+UNMT& Among the financing options for long-term care are a traditional \colorbox{pink}{Pflegeversicherung}, a hyper-fat equity binoculars to \\
+&cover these expenses or a self-fund with your own wealth - as long as you have the money for it.\\\hline
+Problems&SNMT: \_synonym, \_punctuation, omit\_adj. UNMT: \_synonym, \textbf{untranslation}, wrong\_adj, wrong\_noun.\\\hline\hline
+
+$4^{th}$& $\beneficial{S}{U}{\maf1}$: 0.037, $\deleterious{S}{U}{\bleu}$: 0.011 \\\hline
+Src & Trotzdem war der Ton von Ri's Rede dramatisch anders als letztes Jahr, als er es der U.N. berichtete. Die Generalversa-\\
+&mmlung, die das US-Festland mit Nordkoreas Raketen ins Visier nahm, war unvermeidlich, nachdem ``Mr. Evil President" \\
+&Trump Kim als ``Raketenmann" auf einer Selbstmordmission bezeichnete.\\\hline
+
+Ref & Even so, the tone of Ri's speech was dramatically different from last year, when he told the U.N. General Assembly \colorbox{yellow}{that} \\
+&\colorbox{yellow}{targeting the U.S. mainland with North Korea's rockets was inevitable after ``Mr Evil President" Trump called Kim a} \\
+&\colorbox{yellow}{``rocket man" on a suicide mission.}\\\hline
+
+SNMT& However, the tone of Ri's speech was dramatically different from last year when he reported it to the U.N., and the \\
+&General Assembly, targeting the US mainland with North Korea ' s missiles, was inevitable after ``Mr. Evil President " \\
+&Trump called Kim a`` missile man " on a suicide mission.\\\hline
+
+UNMT& Nonetheless, the tone of Ri's speech was dramatically different from last year when he reported it to the U.N. General \\
+&Assembly.\\\hline
+
+Problems&SNMT: \_punctuation, \_synonym. UNMT: \textbf{truncation}.\\
+
+
+    \end{tabular}
+    }
+    \caption{Cases to show different qualities MacroF1 and BLEU value. When the ``diff" is positive, it means the metrics thinks SNMT is better. When the ``diff" is negative, it means the metrics thinks UNMT is better. a) The 3rd ranked sentence has untranslation in UNMT translation that is detected by MacroF1. b) The 4th ranked sentence has the whole second half of the sentence after ``General Assembly" that is truncated in UNMT's translation, and MacroF1 prefers SNMT's translation while BLEU still prefers UNMT. }
+    \label{tab:diff_mf1_bleu}
+\end{table*}
+
+% \textbf{Pros of MacroF1:}
+
+\begin{itemize}
+    \item \maf1 tends to find out untranslations because they have equal weights for each word. Untranslations are rare words and get weighted more. (e.g. 3rd ranked sentence where \maf1 favors SNMT but \bleu favors UNMT.) % \#1564 (3rd)
+    \item \maf1 favors the sentence without truncation which also appears more in UNMT. (e.g. 4th ranked sentence where \maf1 favors SNMT but BLEU favors UNMT.)  %\#758 (4th) \#921 (1996th)
+\end{itemize}

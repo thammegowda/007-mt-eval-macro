@@ -1,0 +1,33 @@
+\section{NMT as Classification}
+\label{sec:mt-as-cls}
+Neural machine translation (NMT) models are often viewed as pairs of encoder-decoder networks.
+Viewing NMT as such is useful in practice for implementation; however, such a view is inadequate for theoretical analysis. % of strengths and weaknesses of architecture.
+\citet{gowda2020finding} provide a high-level view of NMT as two fundamental ML components: an autoregressor and a classifier. 
+Specifically, NMT is viewed as a multi-class classifier that operates on representations from an autoregressor.
+We may thus consider classifier-based evaluation metrics.
+
+
+Consider a test corpus, $T = \{ (x^{(i)}, h^{(i)}, y^{(i)}) | i = 1,2,3...m \}$ where $x^{(i)}$, $h^{(i)}$, and $y^{(i)}$ are source, system hypothesis, and reference translation, respectively. Let $x = \{x^{(i)} \forall i\}$ and similar for $h$ and $y$.  Let $V_h, V_y, V_{h\cap y},$ and $V$ be the vocabulary of $h$, the vocabulary of $y$, $V_h \cap V_y$, and $V_h \cup V_y$, respectively.
+%As multiple-references in MT evaluation are increasing rare nowadays, and for simplicity, we limit our scope to single-reference only.
+%We treat each word type in vocabulary $V$ as a class in a multi-class classifier.
+For each class $c \in V$, 
+\begin{align*}
+ \textsc{Preds}(c) &= \sum_{i=1}^m C(c, h^{(i)})\\
+ \textsc{Refs}(c) &= \sum_{i=1}^m C(c, y^{(i)})\\
+\textsc{Match}(c) &= \sum_{i=1}^m min\{C(c, h^{(i)}), C(c, y^{(i)})\} 
+\end{align*}
+\noindent where $C(c, a)$  counts the number of tokens of type $c$ in sequence $a$~\cite{papineni-etal-2002-bleu}. 
+% and $k$ is a smoothing factor.\footnote{we use $k=1$}
+For each class $c \in V_{h \cap y}$, precision ($P_c$), recall ($R_c$), and $F_\beta$ measure ($F_{\beta;c}$) are computed as follows:\footnote{We consider $F_{\beta;c}$ for $c \not\in V_{h \cap y}$ to be 0.}
+\begin{align*}
+    P_c &= \frac{\textsc{Match}(c)}{\textsc{Preds}(c)} ; \hspace{5mm} R_c = \frac{\textsc{Match}(c)}{\textsc{Refs}(c)} \\
+    F_{\beta;c} &= (1 + \beta^2)  \frac{ P_c \times R_c}{ \beta^2 \times P_k + R_c}
+\end{align*}
+
+The \textit{macro-average} consolidates individual performance by averaging by type, while the  \textit{micro-average} averages by token:  
+\begin{align*}
+\maf\beta &= \frac{\sum_{c \in V} F_{\beta;c}} {|V|}\\
+\mif\beta &= \frac{\sum_{c\in V} f(c) \times F_{\beta;c}} {\sum_{c'\in V} f(c')}
+\end{align*}
+\noindent where $f(c) = \textsc{Refs}(c)+k$ for smoothing factor $k$.\footnote{We use $k=1$.} We scale $\maf\beta$ and $\mif\beta$ values to percentile, similar to \bleu, for the sake of easier readability. 
+%See Figure~\ref{fig:bleu-damage} for visual difference between \maf\beta and \mif\beta.

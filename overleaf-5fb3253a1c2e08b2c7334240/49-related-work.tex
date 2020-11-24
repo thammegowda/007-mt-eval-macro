@@ -1,0 +1,47 @@
+\section{Related Work}
+
+\subsection{MT Metrics}
+ Many metrics have been proposed for MT evaluation, which we broadly categorize into \textit{model-free} or \textit{model-based}. Model-free metrics compute scores based on translations but have no significant parameters or hyperparameters that must be tuned \textit{a priori}; these include  \bleu\ \cite{papineni-etal-2002-bleu}, NIST \cite{doddington2002-nist}, TER \cite{snover2006TER}, and \chrf1 \cite{popovic-2015-chrf}.  Model-based metrics have a significant number of parameters and, sometimes, external resources that must be set prior to use. These include METEOR \cite{banerjee-lavie-2005-meteor},  BLEURT \cite{sellam-etal-2020-bleurt}, YiSi \cite{lo-2019-yisi}, ESIM \cite{mathur-etal-2019-ESIM}, and BEER \cite{stanojevic-simaan-2014-beer}. Model-based metrics require significant effort and resources when adapting to a new language or domain, while model-free metrics require only a test set with references. 
+
+\citet{mathur-etal-2020-tangled} have recently evaluated the utility of popular metrics and recommend the use of either \chrf1 or a model-based metric instead of \bleu. 
+We compare our \maf1 and \mif1 metrics with \bleu, \chrf1, and BLEURT \cite{sellam-etal-2020-bleurt}.
+%Note from Figure~\ref{fig:bleu-damage} that \bleu\ and \chrf1 are implicitly micro-averaged measures similar to \mif1.
+
+%While the \textit{model-based} methods are an interesting research direction, we are concerned about the following two key issues.
+%Firstly, regarding the \textit{undesired biases}: model-based methods are based on learned representations~\cite{kaiwei-NIPS2016-emb-bias} and language modeling~\cite{sheng-etal-2019-nlg-bias} which are known to possess undesired data-based biases~\cite{mehrabi2019survey-bias}.
+%A bias of our primary concern is a marginalization of rare and minority concepts that affect the generation of rare words from Long Tail \cite{gowda2020finding}.
+%Secondly, regarding \textit{uninterpretability}: model-based methods offer only the scores without any reliably established way to reason about those scores. 
+%if we are asked with ``why an output scored a certain score", the explanation one can provide is -- ``the evaluator model assigned that score and we do not know why". 
+%Since many MT models are themselves uninterpretable and known to possess biases~\cite{prates2019-mt-bias}, using uninterpretable and possibly biased evaluators in concurrence makes the discovery and addressing of flaws in MT models even harder.
+%Such a faith on uninterpretable entities in evaluation is against the spirit of science.
+%The methods we have proposed in this work are simple, interpretable, based on well established classifier evaluation methods, and offer performance breakdown to the level of individual types that assist in a detailed analysis. 
+
+%An example analysis between supervised and unsupervised NMT is given in Section~\ref{sec:unmt}.
+    
+
+\subsection{Rare Words are Important}
+\label{sec:rare-words}
+That natural language word types roughly follow a Zipfian distribution is a well known phenomenon \cite{zipf1949human,powers-1998-zipf-apps}.
+The frequent types are mainly so-called ``stop words,'' function words, and other low-information types, while most content words are infrequent types.
+%whereas the right side contains rare content words.
+%Even though frequent types occur several orders of magnitude more frequently than others, they carry relatively less information~\cite{shannon1948mathematical}.
+To counter this natural frequency-based imbalance, statistics such as inverted document frequency (IDF) are commonly used to weigh the \textit{input} words in applications such as information retrieval~\cite{Jones72specificity}.
+%IDF, being inversely proportional to frequencies, emphasizes the infrequent types, as they are more `useful' than the frequent types.
+In NLG tasks such as MT, where words are the \textit{output} of a classifier, there has been scant effort to address the imbalance.
+\citet{doddington2002-nist} is the only work we know of in which the `information' of an n-gram is used as its weight, such that rare n-grams attain relatively more importance than in BLEU. 
+We abandon this direction for two reasons:
+Firstly, as noted in that work, \textit{large amounts of data are required to estimate n-gram statistics}.
+Secondly, unequal weighing is a bias that is best suited to datasets where the weights are derived from, and such biases often do not generalize to other datasets.
+Therefore, unlike \citet{doddington2002-nist}, we assign equal weights to all n-gram classes, and in this work we limit our scope to unigrams only.
+
+While \bleu{} is a precision oriented measure, METEOR \cite{banerjee-lavie-2005-meteor} and CHRF \cite{popovic-2015-chrf} include both precision and recall similar to our methods.
+However, neither of these measures try to address the natural imbalance of class distribution. 
+BEER \cite{stanojevic-simaan-2014-beer} and METEOR \cite{denkowski-lavie-2011-meteor1.3} make an explicit distinction between function and content words; such a distinction inherently captures the frequency differences since the function words are often frequent and content words are often infrequent types. However, doing so requires the construction of potentially expensive linguistic resources. This work does not make any explicit  distinction and uses naturally occurring type counts to effect a similar result.
+
+\subsection{F-measure as an Evaluation Metric}
+F-measure \cite{Rijsbergen-1979-F-meas, chinchor-1992-F-meas} is extensively used as an evaluation metric in classification tasks such as part-of-speech tagging, information extraction, named entity recognition, and sentiment analysis \cite{derczynski-2016-f-score}.
+Viewing MT as a multi-class classifier is a relatively new paradigm \cite{gowda2020finding}, and evaluating MT solely as a multi-class classifier as proposed in this work is not an established practice.
+However, we find that the $F_1$ measure is sometimes used for various analyses when \bleu{} and others are inadequate: The compare-mt tool \citep{neubig-etal-2019-compareMT} supports comparison of MT models based on $F_1$ measure of individual types.
+\citet{gowda2020finding} use $F_1$ of individual types to uncover frequency-based bias in MT models.
+\citet{sennrich-etal-2016-bpe} use corpus-level \textit{unigram $F_1$} in addition to \bleu\ and \chrf{}, however, corpus-level $F_1$ is computed as \mif1. %In this work, \maf1 is our primary focus, and we use \mif1 for  only.
+To the best of our knowledge, there is no previous work that clearly formulates the differences between micro- and macro- averages, and justifies the use of \maf1 for MT evaluation. 

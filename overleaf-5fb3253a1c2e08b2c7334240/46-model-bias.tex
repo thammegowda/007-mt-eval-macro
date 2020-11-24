@@ -1,0 +1,53 @@
+
+
+\section{Biases in Model-based Evaluation}
+\label{sec:model-bias}
+
+Model-based metrics such as BLEURT sometimes outperform our simple statistical metrics. 
+%The human judgments availability for a few high resource languages facilitate in the creation and utilization of model-based metrics in those settings. 
+%However, on low resources settings, as our simple statistical methods do not need training, and hence readily usable. 
+While these metrics are an interesting research direction, we are concerned by the following two key issues:
+\begin{enumerate}[noitemsep,topsep=0pt]
+    \item \textbf{Biases}: model-based metrics are based on learned word embeddings ~\cite{kaiwei-NIPS2016-emb-bias} and language modeling~\cite{sheng-etal-2019-nlg-bias} which are known to possess undesired biases \cite{mehrabi2019survey-bias}. 
+    A bias of our concern is the marginalization of rare and minority concepts that affect the generation of rare types \cite{gowda2020finding}.
+    \item \textbf{Non-interpretability}: the rationale behind any individual score from a model-based metric is opaque, while model-free metrics ultimately amount to an interpretable fraction of matched and unmatched tokens. 
+\end{enumerate}
+
+%if we are asked with ``why an output scored a certain score", the explanation one can provide is -- ``the evaluator model assigned that score and we do not know why". 
+Table \ref{tab:bleurt-bias} contains two case studies that expose BLEURT's internal biases on certain word types.
+Since many MT models are themselves non-interpretable and known to possess biases~\cite{prates2019-mt-bias}, using non-interpretable and biased evaluators in concurrence makes it even harder to discover and address the flaws in MT modeling.
+In comparison, \maf1 is easily interpretable and offers the explanation of score as a composition of individual type performances.
+%All these attributes are helpful to understand and address the flaws of MT models in practice. 
+In addition, \maf1 treats all types equally, and hence it is free from the problems indicated in Table~\ref{tab:bleurt-bias}.
+
+\begin{table}[ht]
+    \centering
+    \footnotesize
+    \begin{tabular}{l l l }
+Reference:& \multicolumn{2}{l}{You must be a doctor.} \\
+Hypothesis: & \multicolumn{2}{l}{$\rule{1cm}{0.15mm}$ must be a doctor.} \\
+    % & You &	~0.990 \\
+    & He	&-0.735 \\
+    %& Alexandra & -0.888 \\
+    %& Alexander & -0.975 \\
+    & Joe & -0.975 \\
+    & Sue & -1.043 \\
+    & She	 &-1.100 \\\hline
+Reference:& \multicolumn{2}{l}{It is the greatest country in the world.} \\
+Hypothesis:& \multicolumn{2}{l}{$\rule{1cm}{0.15mm}$ is the greatest country in the world.} \\
+    % & It	& ~0.957 \\
+    & France &	-0.022 \\
+    & America	& -0.060 \\
+    & Russia &	-0.161 \\
+    %& China  & -0.166 \\
+    %& USA    & -0.168 \\
+    %& India   &	-0.211 \\
+    & Canada  & -0.309 
+    \end{tabular}
+    \caption{BLEURT's internal biases on types lead to significant change in scores and hence rankings of hypothesis.
+    BLEURT's score indicating that `He' is relatively better translation than `She' in the first example, and `France' is relatively better than `Canada' in the second example is not entirely objective.
+    %On the other hand, sentence-level \bleu\ and \maf1 assigns same scores as expected by humans.
+    %Even though these metrics perform well on some benchmark tasks,
+    Using such metrics to select MT/ML models for real-world deployment is questionable.}
+    \label{tab:bleurt-bias}
+\end{table}

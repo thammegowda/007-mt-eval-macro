@@ -1,0 +1,96 @@
+
+%\usepackage[UTF8]{ctex}
+%\documentclass[UTF8]{ctexart}
+%\usepackage{xeCJK}
+%\setCJKmainfont{BabelStone Han}
+
+%\usepackage{verbatim}
+\usepackage{listings}
+
+\usepackage{hyperref}
+\usepackage{tablefootnote}
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{textcomp}
+\usepackage{enumitem} 
+
+\usepackage{multirow}
+%\usepackage{arydshln}
+\usepackage{caption}
+\usepackage{subcaption}
+%\usepackage{rotating} 
+%\usepackage{float}
+
+
+\newcommand*\justify{%
+  \fontdimen2\font=0.4em% interword space
+  \fontdimen3\font=0.2em% interword stretch
+  \fontdimen4\font=0.1em% interword shrink
+  \fontdimen7\font=0.1em% extra space
+  \hyphenchar\font=`\-% allowing hyphenation
+}
+
+%\usepackage{yhmath}
+
+
+\newcommand{\bleu}{{\textsc{Bleu}}}
+\newcommand{\chr}[2]{{C\small{HR}{#1}$_{{#2}}$}}
+\newcommand{\chrx}[1]{\text{\small{CHR}\large{#1}}}
+
+\newcommand{\chrf}[1]{\textsc{ChrF}{$_{#1}$}}
+\newcommand{\bleufx}[1]{{B\small{LEU}F$_{{#1}}$}}
+\newcommand{\bleuf}{{\textsc{BleuF}}}
+
+\newcommand{\maf}[1]{\textsc{MacroF}{\text{$_{{#1}}$}}}
+\newcommand{\mif}[1]{\textsc{MicroF}{\text{$_{{#1}}$}}}
+\newcommand{\mableu}{\textsc{MacroBleu}}
+\newcommand{\mibleu}{\textsc{MicroBleu}}
+\newcommand{\blrtmn}{\textsc{BLEURT}\text{\footnotesize{}mean}}
+\newcommand{\blrtmd}{\textsc{BLEURT}\text{\footnotesize{}median}}
+%\newcommand{\blrtmn}{$\overline{\textsc{Bleurt}}$}
+%\newcommand{\blrtmd}{$\widetilde{\textsc{Bleurt}}$}
+%\newcommand{\blrtmd}{$\overbrace{\textsc{Bleurt}}$}
+
+
+%\usepackage[dvipsnames]{xcolor} % already imported
+\newcommand{\colorann}[3]{\textcolor{#1}{${}^{#2}[$#3$]$}}
+%\newcommand{\jon}[1]{\colorann{red}{Jon}{\footnotesize #1}}
+%\newcommand{\tg}[1]{\colorann{cyan}{TG}{\footnotesize #1}}
+%\newcommand{\wy}[1]{\colorann{orange}{WY}{\footnotesize #1}}
+%\newcommand{\cl}[1]{\colorann{green}{CL}{\footnotesize #1}}
+
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\insig}{$^{\times}$}
+
+\usepackage{amssymb}
+
+%\newcommand{\myurl}[1]{\href{#1}{\small{#1}}}
+\newcommand{\myurl}[1]{\href{#1}{#1}}
+
+%\documentclass[tikz,border=4mm]{standalone}
+\usepackage{tikz}
+\usepackage[normalem]{ulem}
+\usetikzlibrary{positioning,fit,calc,backgrounds}
+\tikzset{block/.style={draw,thick,text width=2cm,minimum height=1cm,align=center},
+         line/.style={-latex}
+}
+\makeatletter
+\def\ruwave{\bgroup \markoverwith{\lower3.5\p@\hbox{\textcolor{red}{\sixly \char58}}}\ULon}
+\font\sixly=lasy6
+\makeatother
+
+
+
+% Weiqiu
+% not sure what to call it yet...
+\usepackage{graphicx,wasysym}
+%\usepackage{xspace,mfirstuc,tabulary}
+\newcommand{\deleterious}[3]{{\Large\frownie{}}_{#1\to#2}^{#3}}
+\newcommand{\beneficial}[3]{{\Large\smiley{}}_{#1\to#2}^{#3}}
+\newcommand{\scoredel}[3]{\delta_{#3}^{#1^{#2}}}

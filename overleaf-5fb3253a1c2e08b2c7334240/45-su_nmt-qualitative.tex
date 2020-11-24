@@ -1,0 +1,244 @@
+
+\subsection{Pairwise Maximum Difference Discriminator}
+
+We consider cases where a metric has a strong opinion of one translation system over another, and analyze whether the opinion is well justified. In order to obtain this analysis we employ a pairwise segment-level discriminator from within a corpus-level metric, which we call \textit{favoritism}.
+
+%describe a UNMT and SNMT differ in \maf1 to see how \maf1 successfully discriminates MT outputs of different quality. To select extreme cases using a corpus-level metric, we use a pairwise maximum difference discriminator which we define below.
+
+% \begin{table}[t]
+%     \centering
+%     \footnotesize
+%     \begin{tabular}{ll}
+% SNMT & UNMT \\ \hline\hline
+% synonym&	\textit{untranslation}, \textit{wrong\_noun}\\
+% synonym&	\textit{untranslation}\\
+% synonym&	\textit{untranslation}, \textit{wrong\_noun}\\
+% synonym, word\_order&	\textit{depend}, \textit{trunc}, \textit{word\_order}\\
+% synonym, inflection&	\textit{untranslation}, \textit{wrong\_noun}\\
+% inflection, word\_order&	\textit{number}\\
+% \textit{time}, word\_order&	 \textit{time}, \textit{weird\_char}, synonym\\
+% synonym&	\textit{untranslation}, \textit{wrong\_noun}\\
+% punctuation, synonym&	\textit{trunc}\\
+% synophrase, word\_order&	word\_order, \textit{untranslation}\\
+%     \end{tabular}
+%     \caption{Problems for top 10 $\delta_{\maf1} (x; S, U)$ sentences such that \maf1 favors SNMT over UNMT for DEEN. The labels in italics are real problems, while the others are issues that hurt \maf1 but are not real translation errors. UNMT has a lot of untranslations.}
+%     \label{tab:snmt_better_mf1}
+% \end{table}
+
+
+% \begin{table}[t]
+%     \centering
+%     % \scalebox{0.8}{
+%     \footnotesize
+%     \begin{tabular}{ll}
+    
+% SNMT & UNMT \\ \hline\hline
+% \textit{unrelated\_other\_lang}&\\
+% \textit{untranslation}&\\
+% \textit{omit\_verb}, \textit{untranslation}&	\textit{wrong\_adj}, \textit{wrong\_verb}\\
+% \textit{wrong\_name}&	\textit{word\_order}\\
+% synophrase, \textit{punctuation}&	\textit{punctuation}, \textit{untranslation}\\
+% \textit{trunc}, \textit{wrong\_meaning}&	\textit{untranslation}\\
+% synonym, \textit{wrong\_name}&	\textit{omit\_verb}, \textit{wrong\_adj}\\
+% \textit{unk}, \textit{untranslation}&	\\
+% punctuation, \textit{preposition}&\\
+% \textit{trunc}, \textit{extra}&	\textit{extra}\\ 
+%     \end{tabular}
+%     % }
+%     \caption{Problems for bottom 10 $\delta_{\maf1} (x; S, U)$ sentences such that \maf1 favors UNMT over SNMT for DEEN. SNMT has a mixture of wrong words, synonym, and word order problems.}
+%     \label{tab:unmt_better_mf1}
+% \end{table}
+
+
+
+% \begin{table}[t]
+%     \centering
+%     \footnotesize
+%     \begin{tabular}{l @{\hspace{1mm}} r @{\hspace{1mm}} |p{2.5cm} @{\hspace{1mm}} | p{2.5cm} }
+% Fav. & $|\delta|$ & SNMT errors  & UNMT errors                            \\ \hline \hline
+% S & .71     & syn                    & \textit{untrans}, \textit{wrong}                 \\
+% S & .64     & syn                    & \textit{untrans}                              \\
+% U & .55     & \textit{unrelated\_other\_lang}       &                                            \\
+% S & .52     & syn                     & \textit{untrans}, \textit{wrong}                 \\
+% U & .45     & untranslation                &                                            \\
+% S & .44     & syn, word\_order         & \textit{subject}, \textit{trunc}, \textit{word\_order}           \\
+% S & .44     & syn, tense               & \textit{untrans}, \textit{wrong}                 \\
+% S & .43     & inflection, word\_order  & \textit{number}                                     \\
+% U & .41     & \textit{omit\_verb}, \textit{untrans}    & \textit{wrong}, \textit{wrong}                    \\
+% S & .41     & \textit{wrong}, word\_order & \textit{wrong}, time\_system, \textit{weird\_char}
+% \end{tabular}
+%     \caption{Problems for top 10 $|\delta_{\maf1} (i; h_S, h_U)|$ for DEEN.}
+%     \label{tab:snmt_better_mf1}
+% \end{table}
+
+% \begin{table}[ht!]
+%     \centering
+%     \footnotesize
+%     \begin{tabular}{r @{\hspace{2mm}} l @{\hspace{2mm}} p{0.68\linewidth} }
+%  $\delta_{\maf1}$ & Fav & Analysis \\ \hline \hline
+%  0.71   & S  & S has synonym; U has \textit{untranslation}, and \textit{wrong noun}  \\
+%  0.64   & S  & S has synonym; U has \textit{untranslation} \\
+%  -0.55  & U  & S has \textit{wrong translation};  U has no issues     \\
+%  0.52   & S  & S has synonym; U has \textit{untranslation}, and \textit{wrong noun} \\
+%  -0.45  & U  & S has \textit{untranslation}; U has no issues \\
+%  0.44   & S  & S has synonym, wrong word order; U has \textit{wrong subject}, \textit{truncation}, and wrong word order \\
+%  0.44   & S  & S has synonym and tense issues; U has \textit{untranslation} \\
+%   0.43  & S  & S has inflection, and wrong word order ; U has \textit{wrong number} \\
+%  -0.41  & U  & S has \textit{omitted verb}, and \textit{untranslation} ; U has \textit{wrong adjective} and \textit{verb} \\
+% 0.41    & S & S has \textit{wrong time} and wrong word order; U has \textit{wrong time}, and \textit{wrong nouns} 
+% \end{tabular}
+% %\caption{Problems in the top 10 segments identified by $|\delta_{\maf1} (i; h_S, h_U)|$ for DEEN. S and U are short for SNMT and UNMT. Fav is the favored system by \maf1. Examples shown in Table~\ref{tab:maf1-top-10}.}
+%     \label{tab:snmt_better_mf1}
+% %\end{table}
+
+% \vspace{10px}
+% %\quad
+% %\begin{table}[ht]
+% %\centering
+% %    \footnotesize
+%     \begin{tabular}{r @{\hspace{2mm}} l @{\hspace{2mm}} p{0.70\linewidth}}
+%  $\delta_{\bleu}$ & Fav   & Analysis    \\ \hline \hline
+% 0.48   & S  & S has wrong word order; U has wrong word order, \textit{untranslation}, and \textit{wrong ending} \\
+% 0.46   & S  & S has spelling variation; U has synonym, wrong word order, and punctuation issues \\
+% 0.44   & S  & S has extra determiner; U has paraphrase, synonym, \textit{wrong number}, and \textit{untranslation}\\
+% 0.42   & S  & S has synonym; U has synonym, punctuation, and extra\_adv issues \\
+% -0.39  & U  & S has \textit{wrong noun}, and \textit{wrong verb}; U has no issues \\
+% -0.37  & U  & S has punctuation; U has no issues \\
+% -0.34  & U  & S has symbol; U has no issues \\
+% -0.32  & U  & S has \textit{wrong adjective}, and \textit{wrong noun}; U has no issues \\
+% -0.32  & U  & S has wrong tense, wrong \textit{word order}, \textit{wrong meaning}, and wrong active/passive voice issues; U has \textit{untranslation} \\
+% -0.31  & U  & S has wrong word order, synonym, and \textit{extra\_conj}; U has \textit{untranslation}  
+% \end{tabular}
+%   %\caption{Problems in the top 10 segments identified by $|\delta_{\bleu} (i; h_S, h_U)|$ for DEEN. S and U are short for SNMT and UNMT. Fav is the favored system by \bleu. Examples shown in Table~\ref{tab:bleu-top-10}.}
+% % \label{tab:unmt_better_mf1}
+% \caption{Problems in the top ten segments identified by $|\delta_{\maf1} (i; h_S, h_U)|$ and $|\delta_{\bleu} (i; h_S, h_U)|$ for DEEN. S and U are short for SNMT and UNMT. Fav is the favored system by metrics. Actual examples shown in Appendix Tables \ref{tab:maf1-top-10} and ~\ref{tab:bleu-top-10}.}
+% \label{tab:mf1_bleu_top10-summary}
+% \end{table}
+
+
+\begin{table*}[ht!]
+    \centering
+    \footnotesize
+    \begin{tabular}{r @{\hspace{2mm}} l @{\hspace{2mm}} p{0.36\linewidth} | r @{\hspace{2mm}} l @{\hspace{2mm}} p{0.36\linewidth} }
+ $\delta_{\maf1}$ & Fav & Analysis 
+    & $\delta_{\bleu}$ & Fav   & Analysis \\ \hline \hline
+ 
+ .071   & S  & S: synonym; U: \textit{untranslation}, \textit{noun} 
+    &  .048   & S  & S: word order; U: word order, \textit{untranslation}, \textit{ending} \\
+ 
+ .064   & S  & S: synonym; U: \textit{untranslation} 
+    & .046   & S  & S: spelling variation; U: synonym, word order, punctuation \\ 
+ 
+ -.055  & U  & U: no issues; S: \textit{translation}    
+    & .044   & S  & S: extra determiner; U: paraphrase, synonym, \textit{number}, \textit{untranslation}  \\
+
+ .052   & S  & S: synonym; U: \textit{untranslation}, \textit{noun} 
+    & .042   & S  & S: synonym; U: synonym, punctuation, extra adverb \\ 
+ 
+ -.045  & U  & U: no issues; S: \textit{untranslation}  
+  & -.039  & U  & U: no issues; S: \textit{noun}, \textit{verb}  \\
+ 
+ .044   & S  & S: synonym,  word order; U: \textit{subject}, \textit{truncation}, word order
+  &  -.037  & U  & U: no issues; S: punctuation  \\
+ 
+ .044   & S  & S: synonym, tense; U: \textit{untranslation} 
+  & -.034  & U  & U: no issues; S: symbol  \\
+ 
+ .043  & S  & S: inflection, word order; U: \textit{ number} 
+    & -.032  & U  & U: no issues; S: \textit{adjective}, \textit{noun} \\
+ 
+ -.041  & U  &  U: \textit{adjective}, \textit{verb}; S: \textit{omitted verb}, \textit{untranslation}
+  & -.032  & U  & U: \textit{untranslation}; S: tense, \textit{word order}, \textit{meaning}, active/passive voice  \\
+   
+.041    & S & S: \textit{time}, word order; U: \textit{time}, \textit{nouns}  
+  & -.031  & U  & U: \textit{untranslation}; S: word order, synonym, \textit{extra\_conj}  
+\end{tabular}
+\caption{Analysis of the ten DE-EN test set segments with the most favoritism in SNMT (S) or UNMT (U), according to $\maf1$ (left) and $\bleu$ (right). Fav is the favored system by metrics. The complete text of the sentences is in the Appendix, Tables~\ref{tab:maf1-top-10} and \ref{tab:bleu-top-10}.}
+\label{tab:snmt_better_mf1}
+\end{table*}
+
+We extend the definition of $T$ from Section~\ref{sec:mt-as-cls} to $T = \{ x, h_S, h_U, y\}$ where each of $h_S$ and $h_U$ is a separate system's hypothesis set for $x$.\footnote{The subscripts represent SNMT and UNMT in this case, though the definition is general.}
+Let $M$ be a corpus-level measure such that $M(h, y) \in \mathbb{R}$ and a higher value implies better translation quality. $M(h^{(-i)}, y^{(-i)})$ is the corpus-level score obtained by excluding $h^{(i)}$ and $y^{(i)}$ from $h$ and $y$, respectively. We define the \textit{benefit} of segment $i$, $\delta_{M} (i; h)$:
+$$\delta_{M} (i; h) = M(h, y) - M(h^{(-i)}, y^{(-i)})$$
+If $\delta_{M} (i; h) > 0$, then $i$ is beneficial to $h$ with respect to $M$, as the inclusion of $h^{(i)}$ increases the corpus-level score. 
+We define the \textit{favoritism} of $M$ toward $i$ as $\delta_{M} (i; h_S, h_U)$:
+\begin{equation}
+\delta_{M} (i; h_S, h_U) =\delta_{M} (i; h_S) - \delta_{M} (i; h_U)
+\label{eq:deleterious}
+\end{equation}
+If $\delta_{M} (i; h_S, h_U) > 0$ then $M$ favors the translation of $x^{(i)}$ by system $S$ over that in system $U$. %For qualitative analysis we inspect translations with maximum favoritism of \maf1 toward SNMT or toward UNMT and manually categorize the translation errors observed in each case. 
+
+%select , such that $\argmax_{x \in X}\delta_{M} (x; S, U)$ selects the sentence most beneficial to $S$ \textit{and} most deleterious to $U$. Analogously, $\argmin_{x \in X}\ \delta_{M} (x; S, U)$ finds the most \textit{deleterious} item in $S$ but not in $U$.
+
+Table~\ref{tab:snmt_better_mf1} reflects the results of a manual examination of the ten sentences in the DE-EN test set with greatest magnitude favoritism; complete results are in the Appendix, Tables~\ref{tab:maf1-top-10} and \ref{tab:bleu-top-10}. Meaning-altering changes such as \textit{`untranslation'}, (wrong) \textit{`time'}, and (wrong) \textit{`translation'} are marked in \textit{italics}, while changes that do not fundamentally alter the meaning, such as `synonym,' (wrong) `inflection,' and (wrong) `word order' are marked in plain text.\footnote{Some changes, such as `word order' may change meaning; these are italicized or not on a case-by-case basis.} 
+
+
+\begin{table*}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{l|l}
+$6^{th}$ & $\delta_\maf1(i,h_S,h_U)$: .044, $\delta_\bleu(i,h_S,h_U)$: -.00087, $\delta_{BLEURT}(i,h_S,h_U)$: .97\\\hline
+
+Ref & Ever since I joined Labour 32 years ago as a school pupil, provoked by the Thatcher government's neglect \colorbox{yellow}{that had left my} \\
+&\colorbox{yellow}{comprehensive school classroom literally falling down, I've sought to champion better public services for those who need them most} \\
+&- \colorbox{yellow}{whether as a local councillor or government minister.}\\\hline
+
+SNMT& 32 years ago, I joined Labour as a student because of the neglect of the Thatcher government, \colorbox{yellow}{which had led to my classroom literally} \\
+&\colorbox{yellow}{collapsed, and as a result I tried to promote better public services for those who need it most, whether as a local council or ministers.}\\\hline
+
+UNMT& Last 32 years ago, as a student, because of the disdain for the Thatcher-era government, Labour joined Labour.\\\hline
+
+Problems & SNMT: synonym, word\_order	 UNMT: \textit{subject}, \colorbox{yellow}{\textit{truncation}}, \textit{word\_order}\\
+
+
+    \end{tabular}
+    }
+    \caption{An example of favoritism that illustrates the differences between \maf1 and \bleu. Translations of the DE-EN test sentence with sixth largest magnitude favoritism according to \maf1, along with the favoritism according to \bleu\ (not in the top ten). UNMT's translation does not include the second half of the sentence. \maf1 favors SNMT, but \bleu\ favors UNMT.}
+    \label{tab:diff_mf1_bleu_example}
+\end{table*}
+
+
+
+The results indicate that \maf1 generally favors SNMT, and with good reason, as the favored translation does not generally alter sentence meaning, while the disfavored translation does. On the other hand, for the ten most favored sentences according to \bleu, four do not contain meaning-altering divergences in the disfavored translation. Importantly, none of the sentences with greatest favoritism according to \maf1, eight of which all have meaning altering changes in the disfavored alternative and none in the favored, appears in the list for \bleu. This indicates relatively bad judgment on the part of \bleu. One case of good judgment from \maf1 and bad judgment from \bleu\ is shown in Table~\ref{tab:diff_mf1_bleu_example}. The case is similar for FR-EN and RO-EN, except that RO-EN has more untranslations for both SNMT and UNMT possibly due to the smaller training data. Complete tables and annotated sentences are in the Appendix, in Section~\ref{app:extraqual}.
+
+
+% \subsection{Qualitative Differences between \bleu\ and \maf1}
+
+% % In order to see how MacroF1 and BLEU differ qualitatively, we look at some extreme cases of translations where MacroF1 and BLEU's rank differ most. We first rank $\beneficial{S}{U}{MacroF1}$ and $\beneficial{S}{U}{BLEU}$ descending separately and aquire the rank differences with
+
+% % $$\Delta\mathit{Rank} = \mathit{Rank}(\beneficial{S}{U}{MacroF1}) - \mathit{Rank}(\beneficial{S}{U}{BLEU})$$
+
+% To examine how \maf1 and \bleu\ differ qualitatively, we look at some extreme examples of translations whose ranks as per \maf1 and \bleu\ differ the most. We first rank all $i$ per descending order of $\delta_{\maf1} (i; h_S, h_U)$ and $\delta_{\bleu} (i; h_S, h_U)$, and define \textit{favorness of $i$ in corpus $h_S$ by $\bleu$ instead of $\maf1$} as the rank differences
+
+% % \begin{equation}
+% % \begin{split}
+% %     \deleterious{\maf1}{\bleu}{Rank}(x) = &\mathit{Rank}(\beneficial{S}{U}{\maf1}(x)) \\
+% % &- \mathit{Rank}(\beneficial{S}{U}{\bleu}(x))
+% % \end{split}
+% % \label{eq:favorness}
+% % \end{equation}
+
+% \begin{equation}
+% \begin{split}
+%     \Delta Rank(i; h_S, h_U) = \mathit{Rank}\big(\delta_{\maf1} (i; h_S, h_U)\big) & \\
+%      - \mathit{Rank}\big(\delta_{\bleu} (i; h_S, h_U)\big) &
+% \end{split}
+% \label{eq:favorness}
+% \end{equation}
+
+% The $\Delta{}Rank(i; h_S, h_U)$ with smallest numbers (ranked to the front) are sentences whose translations in $h_S$ are favored by $\maf1$ while translations in $h_U$ are favored by $\bleu$, and the highest $\Delta{}Rank(i; h_S, h_U)$ (ranked to the back) are opposite: sentences whose translations in $h_S$ are favored by $\bleu$ while translations in $h_U$ are favored by $\maf1$.
+
+% We manually examine sentences with the top 10 $\Delta{}Rank(i; h_S, h_U)$ scores i.e. sentences for which \maf1 and \bleu\ disagree the most, with \maf1 favoring $h_S$ and \bleu\ favoring $h_U$. We conclude the following trend in how \maf1 and BLEURT both favor SNMT, which is more adequate than UNMT (examples shown in Table~\ref{tab:diff_mf1_bleu}):
+% \begin{itemize}[noitemsep,topsep=0pt]
+%     \item \maf1 penalizes untranslations as those are usually rare words which have more weight in \maf1 than \bleu.% e.g. in the 3rd ranked sentence, \maf1 favors SNMT but \bleu\ favors UNMT. % \#1564 (3rd)
+%     \item \maf1 penalizes truncations more than \bleu.\footnote{\bleu's brevity penalty is based on overall corpus length ratio and \textit{not} individual segment length ratios. %At corpus-level, long outputs can make up for the brevity of short outputs.
+%     } UNMT has more truncations than SNMT. % e.g. in the 4th ranked sentence, \maf1 favors SNMT but \bleu\ favors UNMT.
+    
+%     %\#758 (4th) \#921 (1996th)
+% \end{itemize}
+
+% \begin{itemize}
+%     \item \maf1 disfavors untranslations, which are rare words and weighted more by \maf1 than \bleu. (e.g. For the 6th ranked sentence, \maf1 favors SNMT but \bleu\ favors UNMT.) % \#1179 (6rd)
+%     \item \maf1 favors the sentence without truncation which also appears more in UNMT. (e.g. For the 89th ranked sentence, \maf1 favors SNMT but \bleu\ favors UNMT.)  %\#921 (1996th)
+% \end{itemize}
+

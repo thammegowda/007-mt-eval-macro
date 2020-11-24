@@ -1,0 +1,85 @@
+\section{Spotting Qualitative Differences between Supervised and Unsupervised NMT with \maf1}
+\label{sec:unmt}
+
+% \begin{tabular}{l rr | rr | rr| rr | rr | rr }
+% \multicolumn{1}{}{} 
+%      & \multicolumn{2}{c|}{\bleu}
+%                   & \multicolumn{2}{c|}{\maf1} 
+%                                  & \multicolumn{2}{c|}{\mif1} 
+%                                               &\multicolumn{2}{c|}{\chrf1} 
+%                                                             &\multicolumn{2}{c|}{\blrtmn} 
+%                                                                                 &\multicolumn{2}{c}{\blrtmd} \\
+%      & SN   & UN   & SN   & UN   & SN   & UN   & SN   & UN   & SN     & UN      & SN     & UN \\ \hline\hline
+% DEEN & 32.7 & 33.9 & 38.5 & 33.6 & 58.7 & 57.9 & 59.9 & 58.0 & 0.211 & -0.026 & 0.285 & 0.067 \\
+% ENDE & 24.0 & 24.0 & 24.0 & 23.5 & 47.7 & 48.1 & 53.3 & 52.0 &-0.134 & -0.204 &-0.112 & -0.197 \\
+% FREN & 31.1 & 31.2 & 41.6 & 33.6 & 60.5 & 58.3 & 59.1 & 57.3 & 0.182 &  0.066 & 0.243 & 0.154 \\
+% ENFR & 25.6 & 27.1 & 31.9 & 27.4 & 53.0 & 52.3 & 56.0 & 57.7 & 0.104 &  0.042 & 0.096 & 0.063 \\
+% ROEN & 30.8 & 29.6 & 40.3 & 33.0 & 59.8 & 56.5 & 58.0 & 54.7 & 0.004 & -0.058 & 0.045 &-0.004 \\
+% ENRO & 31.2 & 31.0 & 34.6 & 31.0 & 55.4 & 53.4 & 59.3 & 56.7 & 0.030 & -0.046 & 0.027 &-0.038 \\ 
+% \end{tabular}%
+\begin{table*}[ht!]
+\centering
+%\fontsize{8.5}{8.8}
+%\selectfont
+\footnotesize
+
+\begin{tabular}{l @{\hspace{3mm}} r @{\hspace{1.5mm}} r @{\hspace{1.5mm}}r |  r@{\hspace{1.5mm}}r@{\hspace{1.5mm}}r |
+  r@{\hspace{1.5mm}}r@{\hspace{1.5mm}}r | r@{\hspace{1.5mm}} r@{\hspace{1.5mm}} r | r@{\hspace{1.5mm}} r@{\hspace{1.5mm}} r | r @{\hspace{1.5mm}} r@{\hspace{1.5mm}} r}
+& \multicolumn{3}{c|}{\bleu} & \multicolumn{3}{c|}{ \maf1 } & \multicolumn{3}{c|}{ \mif1 } & \multicolumn{3}{c|}{ \chrf1 } & \multicolumn{3}{c|}{ \blrtmn } & \multicolumn{3}{c}{ \blrtmd } \\ 
+& SN & UN & $\Delta$ & SN & UN & $\Delta$ & SN & UN & $\Delta$ & SN & UN & $\Delta$ & SN & UN & $\Delta$ & SN & UN & $\Delta$ \\ \hline \hline
+DE-EN & 32.7 & 33.9 & -1.2 & 38.5 & 33.6 & 4.9 & 58.7 & 57.9 &  0.8 & 59.9 & 58.0 &  1.9 & .211 & -.026 & .24 & .285 & .067 & .22 \\
+EN-DE & 24.0 & 24.0 &  0.0 & 24.0 & 23.5 & 0.5 & 47.7 & 48.1 & -0.4 & 53.3 & 52.0 &  1.3 &-.134 & -.204 & .07 &-.112 &-.197 & .09 \\
+FR-EN & 31.1 & 31.2 & -0.1 & 41.6 & 33.6 & 8.0 & 60.5 & 58.3 &  2.2 & 59.1 & 57.3 &  1.8 & .182 &  .066 & .17 & .243 & .154 & .09 \\
+EN-FR & 25.6 & 27.1 & -1.5 & 31.9 & 27.3 & 4.6 & 53.0 & 52.3 &  0.7 & 56.0 & 57.7 & -1.7 & .104 &  .042 & .06 & .096 & .063 & .03 \\
+RO-EN & 30.8 & 29.6 &  1.2 & 40.3 & 33.0 & 7.3 & 59.8 & 56.5 &  3.3 & 58.0 & 54.7 &  3.3 & .004 & -.058 & .06 & .045 & -.004 & .04 \\
+EN-RO & 31.2 & 31.0 &  0.2 & 34.6 & 31.0 & 3.6 & 55.4 & 53.4 &  2.0 & 59.3 & 56.7 &  2.6 & .030 & -.046 & .08 & .027 & -.038 & .07 \\
+\end{tabular} 
+
+\caption{For each language direction, UNMT (UN) models have similar \bleu\ to SNMT (SN) models, and \chrf1 and \mif1 have small differences. 
+However, \maf1 scores differ significantly, consistently in favor of SNMT. 
+Both corpus-level interpretations of BLEURT support the trend reflected by \maf1, but the value differences are difficult to interpret.
+}
+\label{tab:unmt_vs_snmt}
+\end{table*}
+
+% \begin{figure*}[ht!]
+%     \centering
+%     \begin{subfigure}[b]{0.48\linewidth}
+%     \includegraphics[width=\linewidth,trim={13mm 5mm 25mm 10mm},clip]{img/s_unmt-fren-maf1.pdf}
+%     \label{fig:s-vs-u-fren}
+%     \end{subfigure}
+%     \hfill 
+%     \begin{subfigure}[b]{0.48\linewidth}
+%     \includegraphics[width=\linewidth,trim={13mm 7mm 25mm 10mm},clip]{img/s_unmt-enfr-maf1.pdf}
+%     \label{fig:s-vs-u-roen} 
+%     \end{subfigure}
+
+% \caption{\small Visualization of \maf1 between SNMT and UNMT. 
+% Only the FREN and ENFR test sets for the most frequent 500 types are shown here, but the trend is similar on the other settings (see Figure~\ref{fig:snmt_vs_unmt-rest} in appendix).
+% UNMT generally outperforms SNMT on the frequent types that contribute to fluency and hence score comparable \bleu\ scores, however, SNMT is generally better than UNMT on rare types hence SNMT scores higher \maf1. \tg{Explain that lines are viz of cumulative .}
+% }
+% \label{fig:snmt_vs_unmt}
+% \end{figure*}
+
+Unsupervised neural machine translation (UNMT) systems trained on massive monolingual data without parallel corpora have made significant progress recently \cite{Artetxe-2018-unmt-iclr,Lample-2018-unmt-iclr,lample-etal-2018-phrase-unmt,yang-etal-2018-unmt,conneau-NIPS2019-xlm,Song-2019-MASS,liu2020mbart}. 
+In some cases, UNMT yields a \bleu\ score that is comparable with strong\footnote{though not, generally, the strongest} supervised neural machine translation (SNMT) systems. In this section we leverage \maf1 to investigate differences in the translations from UNMT and SNMT systems that have similar \bleu.
+
+%\subsection{Experiment Settings}
+We compare UNMT and SNMT for English $\leftrightarrow$ German (EN-DE, DE-EN), English $\leftrightarrow$ French (EN-FR, FR-EN), and English $\leftrightarrow$ Romanian (EN-RO, RO-EN).
+All our UNMT models are based on XLM \citep{conneau-NIPS2019-xlm}, pretrained by \citet{XLM-UNMT-Models20}. 
+We choose SNMT models with similar \bleu\ on common test sets by either selecting from systems submitted to previous WMT News Translation shared tasks~\cite{bojar-EtAl:2014:W14-33,bojar-EtAl:2016:WMT1} or by building such systems.\footnote{We were unable to find EN-DE and DE-EN systems with comparable \bleu\ in WMT submissions so we built standard Transformer-base~\cite{vaswani2017attention} models for these using appropriate training data to reach the desired \bleu\ performance. We report EN-RO results with diacritic removed to match the output of UNMT.} Specific SNMT models chosen are in the Appendix (Table~\ref{tab:unmt_vs_snmt2}).
+
+ Table~\ref{tab:unmt_vs_snmt} shows performance for these language pairs using a variety of metrics. Despite comparable \bleu\ and only minor differences in \mif1 and \chrf1, SNMT models have consistently higher \maf1 and BLEURT than the UNMT models for all six translation directions. 
+ 
+% We thus investigate \textit{why} there is such a divergence of relative opinion as measured by these autoeval methods.
+% Note that \bleu\ and \chrf1 do not facilitate an type-wise comparison of MT models.
+% Even though \blrtmn\ and \blrtmd\ show discrepancy between SNMT and UNMT, we are unable to interpret the difference and reason about it, which is concerning.
+% However, \maf1 also provides performance per type, which are readily interpretable, on which macro-average is computed.
+
+% Figure~\ref{fig:snmt_vs_unmt}, which is a visualization of \maf1 on most frequent 500 types, shows that UNMT outperforms SNMT on the frequent types such as stopwords which are weighed relatively highly in \bleu\ and other micro-averaged methods; however, SNMT is generally better than UNMT on the rest; hence, SNMT scores higher \maf1 than UNMT.
+% Figure~\ref{fig:snmt_vs_unmt} is a simple explanation for the discrepancy between \maf1 and other micro-averaged methods in Table~\ref{tab:unmt_vs_snmt}.
+% The take away from this section is that the easier interpretability aspect of \maf1 helps in uncovering the differences and flaws of MT models.
+% For instance, it enabled us to find that the current UNMT systems produce fluent translations where as SNMT systems produce more adequate translations.
+
+\input{45-su_nmt-qualitative}
+
