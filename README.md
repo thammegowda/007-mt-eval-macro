@@ -1,6 +1,10 @@
-# 005-nmt-as-cls
-NMT as autoregressive classifier 
+# Macro Average: Rare Types are Important Too
 
+> This work is being published at NAACL2021
+
+
+* Post: https://isi.edu/~tg/posts/2021/03/macroavg-rare-types-important/ 
+* Paper: (TODO: link)
 
 
 
