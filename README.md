@@ -15,7 +15,7 @@ You may also refer to [.gitmodules](.gitmodules) file to see the URLs of submodu
 The organization of this directory is as follows:
 
 ```
-  + justifics/ 
+  + justifs/ 
      + webnlg-human-evaluation/:  WebNLG task
      + wmt-metrics/ :  WMT metrics task
      + material/     :  CLIR task CLSSTS datasets
