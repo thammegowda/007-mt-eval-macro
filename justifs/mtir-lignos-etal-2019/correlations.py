@@ -13,7 +13,7 @@ log.basicConfig(level=log.INFO)
 
 
 def main():
-    file = 'MTIR-scores-all-corrected.txt'
+    file = 'tables/MTIR-scores-all-corrected.txt'
     table = pd.read_table(file)
     table['Group'] = table['Lang'] + ' ' + table['Dataset'] + ' ' + table['Model']
     table.drop(columns=['Lang', 'Dataset', 'Model'], inplace=True)
@@ -42,7 +42,7 @@ def main():
                 result.append(row)
 
         res = pd.DataFrame(result, columns=header)
-        out_file = f'MTIR-{corr_name}.csv'
+        out_file = f'tables/MTIR-{corr_name}.csv'
         log.info(f"Saving {out_file}")
         res.to_csv(out_file, sep='\t')
 
