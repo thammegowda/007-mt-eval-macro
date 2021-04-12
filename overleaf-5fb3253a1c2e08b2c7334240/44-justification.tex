@@ -6,7 +6,7 @@ In the following sections, we verify and justify the utility of \maf1 while also
 %library with signature \texttt{\small BLEU+case.mixed+lang.<xx>-<yy>+numrefs.1 +smooth.exp+tok.<TOK>+version.1.4.13}, where \texttt{<TOK>} is \texttt{zh} for Chinese, and \texttt{13a} for all other languages. 
 %\maf1 and \mif1 use the same tokenizer as \bleu.
 %\chrf1 is also obtained using \textsc{SacreBleu} and has signature \texttt{\small chrF1+lang.<xx>-<yy>+numchars.6+space.false +version.1.4.13}.
-BLUERT scores are from the \textit{base} model \citep{sellam-etal-2020-bleurt}. We consider two varieties of averaging to obtain a corpus-level metric from the segment-level BLEURT: mean and median of segment-level scores per corpus.
+BLEURT scores are from the \textit{base} model \citep{sellam-etal-2020-bleurt}. We consider two varieties of averaging to obtain a corpus-level metric from the segment-level BLEURT: mean and median of segment-level scores per corpus.
 }
 % Since BLEURT is a segment-level measure, we consider both \blrtmn\ and \blrtmd, which are mean and median of segment-level scores, as its corpus-level measures. \wy{moved forward to section 3}
 We use Kendall's rank correlation coefficient, $\tau$, to compute the association between metrics and human judgments.
@@ -194,7 +194,7 @@ An essential resource of this analysis is a dataset with human annotations for c
 %Specifically, this analysis requires datasets that have documents in source language and queries in target language,  along with the human translation of documents to calculate scores from MT measures, and human judgments of query to document relation to calculate IR performance.
 %In addition, such datasets for a diverse set of languages are desired to verify the generalizabilty of findings.
 %IARPA's Machine Translation for English Retrieval of Information in Any Language (MATERIAL) program\footnote{\myurl{https://www.iarpa.gov/index.php/research-programs/material/material-baa}} and made such datasets available, however only to its participants. 
-We conduct experiments on two datasets: firstly, on data from the 2020 workshop on \textit{Cross-Language Search and Summarization of Text and Speech} (CLSSTS) \cite{clssts-2020}, and secondly, on data originally from Europarl, prepared by \citet{lignos-etal-2019-MT-IR} (Europarl).
+We conduct experiments on two datasets: firstly, on data from the 2020 workshop on \textit{Cross-Language Search and Summarization of Text and Speech} (CLSSTS) \cite{zavorin-etal-2020-corpora}, and secondly, on data originally from Europarl, prepared by \citet{lignos-etal-2019-MT-IR} (Europarl).
 
 %he restricted-access MATERIAL datasets using the systems submitted by MATERIAL performers where high-quality human judgments are available, and secondly, on publicly available datasets prepared by with a few assumptions on query-relevance judgments.
 
@@ -251,7 +251,7 @@ AQWV\footnote{\href{https://www.nist.gov/system/files/documents/2017/10/26/aqwv\
 %The translated documents are indexed by an IR system, and the end-to-end performance on a set of queries is evaluated using AQWV metric with the help of human created judgments.
 %Our CLIR system is based on \citet{boschee-etal-2019-saral}, which is competitive in the workshop on CLSSTS-2020~\cite{clssts-2020}.
 %Since the CLIR system is also treated as a blackbox, the internals of CLIR is unnecessary and beyond the scope of this work.
-We use a single CLIR system with the same IR settings for all MT models in the set,\footnote{Details of IR and MT models anonymized} and measure Kendall's $\tau$ between MT and IR measures.
+We use a single CLIR system \cite{boschee-etal-2019-saral} with the same IR settings for all MT models in the set, and measure Kendall's $\tau$ between MT and IR measures.
 The results, in Table~\ref{tab:material-kendall}, show that \maf1 is the strongest indicator of CLIR downstream task performance in five out of six settings.
 AQWV and MAP have a similar trend in agreement to the MT metrics.
 \chrf1 and BLEURT, which are strong contenders when generated text is directly evaluated by humans, do not indicate CLIR task performance as well as \maf1, as CLIR tasks require faithful meaning equivalence across the language boundary, and human translators can mistake fluent output for proper translations \cite{callison-burch-etal-2007-meta}. 

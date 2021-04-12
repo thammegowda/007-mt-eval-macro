@@ -21,7 +21,7 @@ For each class $c \in V$,
 For each class $c \in V_{h \cap y}$, precision ($P_c$), recall ($R_c$), and $F_\beta$ measure ($F_{\beta;c}$) are computed as follows:\footnote{We consider $F_{\beta;c}$ for $c \not\in V_{h \cap y}$ to be 0.}
 \begin{align*}
     P_c &= \frac{\textsc{Match}(c)}{\textsc{Preds}(c)} ; \hspace{5mm} R_c = \frac{\textsc{Match}(c)}{\textsc{Refs}(c)} \\
-    F_{\beta;c} &= (1 + \beta^2)  \frac{ P_c \times R_c}{ \beta^2 \times P_k + R_c}
+    F_{\beta;c} &= (1 + \beta^2)  \frac{ P_c \times R_c}{ \beta^2 \times P_c + R_c}
 \end{align*}
 
 The \textit{macro-average} consolidates individual performance by averaging by type, while the  \textit{micro-average} averages by token:  
