@@ -25,3 +25,21 @@ The organization of this directory is as follows:
 ```
 Please refer to paper for the role of each task. Each directory have scripts required to obtain the results. 
 
+
+## Citation
+```
+@inproceedings{gowda-etal-2021-macro,
+    title = "Macro-Average: Rare Types Are Important Too",
+    author = "Gowda, Thamme  and
+      You, Weiqiu  and
+      Lignos, Constantine  and
+      May, Jonathan",
+    booktitle = "Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jun,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.naacl-main.90",
+    doi = "10.18653/v1/2021.naacl-main.90",
+    pages = "1138--1157",
+}```
