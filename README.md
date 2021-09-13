@@ -1,7 +1,7 @@
 # Macro Average: Rare Types are Important Too
 
 * Summary : https://isi.edu/~tg/posts/2021/03/macroavg-rare-types-important/ 
-* Paper: (TODO: link)
+* Paper: https://aclanthology.org/2021.naacl-main.90/ 
 
 This repository contains all the tools, analysis and outcomes of our "Macro-Average: Rare Types Are Important Too" paper. 
 
